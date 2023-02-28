@@ -1,0 +1,34 @@
+{% extends "base.html" %} {% block title %}Panel de Control{% endblock %} {% block content
+%}
+
+
+<h3 align="center">Panel de Control</h3>
+<div class="mt-4 container center">
+  <div class="row align-items-center minh-100 dashboard-container d-flex justify-content-center align-items-center">
+  <div class="card col-sm-4 p-2 border-0 d-flex justify-content-center align-items-center" style="width: 18rem;" >
+    <a class="text-decoration-none text-dark text-center h1" href="{{url_for("views.games")}}">
+    <i class="bi bi-trophy text-center"></i>
+    <div class="card-body p-2">
+      <p class="h6 card-text text-center">CAMPEONATOS</p>
+    </div></a>
+  </div>
+  <div class="card col-sm-4 p-2 border-0 d-flex justify-content-center align-items-center h1" style="width: 18rem;">
+    <a class="text-decoration-none text-dark text-center h1" href="{{url_for("views.edit_users")}}">
+    <i class="bi bi-people text-center"></i>
+    <div class="card-body p-2">
+      <p class="h6 card-text text-center">JUGADORES</p>
+    </div>
+  </div>
+  <div class="card col-sm-4 p-2 border-0 d-flex justify-content-center align-items-center h1" style="width: 18rem;">
+    <i class="bi bi-whatsapp text-center"></i>
+    <div class="card-body p-2">
+      <p class="h6 card-text text-center">CONVOCATORIA</p>
+    </div>
+  </div>
+  </div>
+
+</div>
+
+
+
+{% endblock %}

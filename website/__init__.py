@@ -5,7 +5,7 @@ from flask_login import LoginManager
 
 
 db = SQLAlchemy()
-DB_NAME = "mysql://root:12345@localhost/envite"
+DB_NAME = "mysql://root:1234@localhost/envite"
 UPLOAD_FOLDER = "/static/images/"
 
 
@@ -49,7 +49,7 @@ def create_app():
     return app
 
 
-def create_database(app):
-    if not path.exists('website/' + DB_NAME):
-        db.create_all(app=app)
-        print('Created Database!')
+# def create_database(app):
+#     if not path.exists('website/' + DB_NAME):
+#         db.create_all(app=app)
+#         print('Created Database!')

@@ -47,23 +47,23 @@
 
       {%for round in game.rounds_played%}
                   <div class="container container-fluid">
-                    <div class="row"> 
-                      <div class="col p-0 col-1 d-flex text-center justify-content-center p-0 align-self-center">
+                    <div class="row d-flex justify-content-between"> 
+                      <div class="col p-0 col-2 d-flex text-center justify-content-center p-0 align-self-center">
                         <p class="font-weight-bold m-0">{{round.number}}</p>
                       </div >
-                      <div class="col col-9 p-0 text-center">
+                      <div class="col d-flex text-center justify-content-center align-self-center">
                         
                         <div class="row justify-content-center fluid p-0">
                       {%for players in round.players%}
-                      <div class="col p-0 compress">
+                      <div class="col">
                         <div class = "container fluid container-fluid p-0">
-                          <div class="row compress justify-content-center mt-2">
-                            <div class="col text-center compress align-items-end p-0">                
-                            <img src="{{ url_for('static', filename='images/' ~players.id~  '/' ~players.photo~'') }}" alt="{{ players.first_name }}" class = "round-img">
+                          <div class="row justify-content-center mt-2">
+                            <div class="col px-1">                
+                            <img src="{{ url_for('static', filename='images/' ~players.id~  '/' ~players.photo~'') }}" alt="" class = "round-img">
                             </div>
                           </div>
-                            <div class="row compress">
-                              <div class="col p-0 text-center">
+                            <div class="row">
+                              <div class="col p-0">
                                 {{players.first_name}}
                               </div>
                             </div>
@@ -74,7 +74,7 @@
                     
                
                   </div>
-                  <div class="col col-2 d-flex text-center justify-content-center p-0 align-self-center">
+                  <div class="col col-2 d-flex text-center justify-content-end px-3 align-self-center">
                         <a class="text-decoration-none text-dark" href="" data-toggle="modal" data-target="#{{round.id}}"> <i class="bi-pencil-square text-dark"></i></a> &nbsp;&nbsp;&nbsp; 
                         <a class="text-decoration-none text-dark" href="" data-toggle="modal" data-target="#delete-{{round.id}}"> <i class="bi bi-trash text-dark"></i></a>
                   </div>
@@ -100,19 +100,19 @@
         <input type="hidden" value="{{round.id}}" name="roundsId" id="roundsId"></input>
       <div class="modal-body">
         <div class = "container ">
-        <div class="row">
+        <div class="row justify-content-center align-items-center">
             {% for user in users %}
             
-            <div class="col p-0 ">
+            <div class="col-auto p-0">
               <div class = "container">
-                <div class="row">
-                  <div class="col text-center align-items-end  p-0">
+                <div class="row justify-content-center">
+                  <div class="col-auto px-1 text-center">
                 <label class="checkbox round-checkbox">
                   <input type="checkbox" name="players" value="{{ user.id }}" {{'checked' if user in round.players else '' }}>
-                  <img src="{{ url_for('static', filename='images/' ~user.id~  '/' ~user.photo~'') }}" alt="Checkbox para {{ user.first_name }}" class = "">
+                  <img src="{{ url_for('static', filename='images/' ~user.id~  '/' ~user.photo~'') }}" alt="" class = "">
               </div>
               </div>
-                  <div class="row">
+                  <div class="row justify-content-center">
                     <div class="col text-center">
                       {{user.first_name}}
                     </div>
@@ -198,7 +198,7 @@
                   <div class="col text-center align-items-end  p-0">
                 <label class="checkbox round-checkbox">
                   <input type="checkbox" name="players" value="{{ user.id }}">
-                  <img src="{{ url_for('static', filename='images/' ~user.id~  '/' ~user.photo~'') }}" alt="Checkbox para {{ user.first_name }}" class = "">
+                  <img src="{{ url_for('static', filename='images/' ~user.id~  '/' ~user.photo~'') }}" alt="" class = "">
               </div>
               </div>
                   <div class="row">

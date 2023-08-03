@@ -1,0 +1,29 @@
+{% extends "base.html" %} {% block title %}Donde Cuadre{% endblock %} {% block content
+%}
+<h3 align="center">Donde Cuadre</h3>
+<link rel="stylesheet" href="static/leaderboard.css">
+
+<div class="container">
+    <h1>Inicio del juego</h1>
+
+    <h2>Cartas de Jugador 1:</h2>
+    <ul>
+      {% for card in player1_cards %}
+        <li>{{ card }}</li>
+      {% endfor %}
+    </ul>
+    
+    <h2>Cartas de Jugador 2:</h2>
+    <ul>
+      {% for card in player2_cards %}
+        <li>{{ card }}</li>
+      {% endfor %}
+    </ul>
+    
+    <p>¡El juego está por comenzar!</p>
+</div>
+
+
+
+
+{% endblock %}

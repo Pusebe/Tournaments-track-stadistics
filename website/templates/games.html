@@ -1,28 +1,98 @@
 {% extends "base.html" %} {% block title %}Campeonatos{% endblock %} {% block content
   %}
   <link rel="stylesheet" href="{{url_for("static", filename="games.css")}}">
+
+  
   
   <h3 align="center">Campeonatos</h3>
   
-    <div class="card">
+    <div class="card mb-1">
       <div class="card-header bg-dark text-light">
         Añadir Campeonato
       </div>
-      <div class="card-body text-center p-2">
+      <div class="card-body text-center p-2 ">
         <a class="text-decoration-none text-dark" href="" data-toggle="modal" data-target="#add-place"> <i class="bi bi-plus-circle h2 text-dark"></i></a>
       </div>
     </div> 
 
 {% for game in games%}
-<div class="card">
+<div class="card mb-1">
   <div class="card-header bg-dark text-light d-flex justify-content-between align-items-center">
-  <div class="place">{{game.place}}</div>
+  <div class="place">{{game.place}}
+    <div>
+      <small>{% if game.position == 1 %}Campeones / {{game.price}}
+              {% elif game.position == 2 %} Subcampeones / {{game.price}}
+              {%else%} (Perido)
+              {%endif%}
+      </small>
+    </div>
+    
+  </div>
   <div>
+    <a class="text-decoration-none text-dark" href="" data-toggle="modal" data-target="#{{game.id}}"> <i class="bi-pencil-square text-light"></i></a> &nbsp;&nbsp;&nbsp; 
     <a href="" data-toggle="modal" data-target="#delete-{{game.id}}" class="text-decoration-none">
       <i class="bi bi-trash text-light"></i>
     </a>
   </div>
 </div>
+<!-- Modal Update Tournament-->
+<div class="modal fade" id="{{game.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-dark">
+        <h6 class=" h6 modal-title text-light" id="exampleModalLongTitle">Editar el campeonato de {{game.place}}</h5>
+        <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form method="POST" action="{{url_for('views.update_game')}}">
+        <input type="hidden" value="{{game.id}}" name="game_id" id="game_id"></input>
+      <div class="modal-body"> 
+        <div class="form-group">
+          <label for="place">Campeonato</label>
+          <input
+            type="text"
+            class="form-control"
+            id="place"
+            name="place"
+            placeholder="{{game.place}}"
+            autofocus
+          />
+          <label for="price">Premio</label>
+          <input
+            type="text"
+            class="form-control"
+            id="price"
+            name="price"
+            placeholder="{{game.price}}"
+          />             
+            <label for="position">Premio</label>
+            <select class="form-control" id="position" name="position">
+              <option value="1" {% if game.position == 1 %} selected{% endif%}>1º</option>
+              <option value="2" {% if game.position == 2 %} selected{% endif%}>2º</option>
+              <option value="3" {% if game.position == 3 %} selected{% endif%}>3º</option>
+              <option value="" {% if game.position == None %} selected{% endif%}>Ya no merece la pena...</option>
+            </select>
+
+            <label for="price">Jugado el:</label>
+            <input
+              type="date"
+              class="form-control"
+              id="created_at"
+              name="created_at"
+              value = "{{game.created_at.strftime('%Y-%m-%d')}}"
+            />   
+            </div>
+      </div>              
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <button type="submit"  class="btn btn-dark">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
 
 <!-- Modal Delete Game-->
  <div class="modal fade" id="delete-{{game.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -75,7 +145,7 @@
                
                   </div>
                   <div class="col col-2 d-flex text-center justify-content-end px-3 align-self-center">
-                        <a class="text-decoration-none text-dark" href="" data-toggle="modal" data-target="#{{round.id}}"> <i class="bi-pencil-square text-dark"></i></a> &nbsp;&nbsp;&nbsp; 
+                        <a class="text-decoration-none text-dark" href="" data-toggle="modal" data-target="#update-round-{{round.id}}"> <i class="bi-pencil-square text-dark"></i></a> &nbsp;&nbsp;&nbsp; 
                         <a class="text-decoration-none text-dark" href="" data-toggle="modal" data-target="#delete-{{round.id}}"> <i class="bi bi-trash text-dark"></i></a>
                   </div>
                 </div> 
@@ -87,7 +157,7 @@
                   </div>   
                   <hr class="hr m-2">
 <!-- Modal Update Round-->
- <div class="modal fade" id="{{round.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+ <div class="modal fade" id="update-round-{{round.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header bg-dark">
@@ -258,7 +328,34 @@
       placeholder="Lugar del Campeonato.."
       autofocus
     />
+    <label for="price">Premio</label>
+    <input
+      type="text"
+      class="form-control"
+      id="price"
+      name="price"
+      placeholder="Si no hubo premio déjalo en blanco..."
+    />
       </div>              
+      <label for="position">Premio</label>
+      <select class="form-control" id="position" name="position">
+        <option value="1">1º</option>
+        <option value="2">2º</option>
+        <option value="3">3º</option>
+        <option value="">Ya no merece la pena...</option>
+      </select>
+
+      <label for="price">Jugado el:</label>
+      <input
+        type="date"
+        class="form-control"
+        id="created_at"
+        name="created_At"
+        placeholder="Fecha actual"
+        value=""
+      />  
+        </div>      
+
 
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

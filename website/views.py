@@ -24,9 +24,9 @@ def admin_required(f):
     return decorated_function
 
 
-@views.route('/', methods=['GET', 'POST'])
+@views.route('/', methods=['GET'])
 def home():
-    return render_template("home.html", user=current_user, winrates=top_10_winrates())
+    return render_template("home.html", user=current_user, users= User.query.all(), winrates=top_10_winrates(), games=Games.query.order_by(Games.created_at.desc()).all())
 
 
 @views.route('/profile', methods=['GET', 'POST'])
@@ -82,8 +82,7 @@ def dashboard():
 @views.route('/dashboard/games', methods=['GET', 'POST'])
 @admin_required
 def games():
-    games = Games.query.all()
-    games.reverse()
+    games = Games.query.order_by(Games.created_at.desc()).all()
     return render_template('games.html', user=current_user, games=games, users=User.query.all())
 
 
@@ -139,14 +138,38 @@ def add_round():
 
     return redirect("/dashboard/games")
 
+@views.route('/update-game', methods=['POST'])
+@admin_required
+def update_game():
+    game_id = request.form.get('game_id')
+    game = Games.query.get(game_id)
+    place = request.form.get('place') 
+    game.position = int(request.form.get('position')) if request.form.get('position') else None
+    price = request.form.get('price')
+    game.created_at = request.form.get('created_at')
+
+    if place != "":
+        game.place = place
+
+    if price != "":
+        game.price = price
+
+    db.session.commit()
+
+    return redirect("/dashboard/games")
+
 
 @views.route('/add-game', methods=['POST'])
 @admin_required
 def add_game():
 
     place = request.form.getlist('place')
+    position = int(request.form.get('position')) if request.form.get('position') else None
+    price = request.form.get('price')
+    created_at = request.form.get('created_at')
+    print(current_user.id)
 
-    new_game = (Games(place=place))
+    new_game = (Games(place=place, position=position, price=price, created_at=created_at, created_by=current_user.id))
 
     db.session.add(new_game)
     db.session.commit()
@@ -167,8 +190,8 @@ def delete_game():
     return jsonify({})
 
 
-@views.route('/edit-users', methods=['GET', 'POST'])
-@login_required
+@views.route('dashboard/edit-users', methods=['GET', 'POST'])
+@admin_required
 def edit_users():
     if request.method == 'POST':
         email = request.form.get('email')
@@ -209,3 +232,26 @@ def edit_users():
         db.session.commit()
 
     return render_template("edit_users.html", user=current_user, users=User.query.all())
+
+
+
+@views.route('/user/<int:user_id>/data')
+def get_user_data(user_id):
+    user = User.query.get(user_id)
+    games_played=[]
+
+    for round in user.rounds_played:
+        game = round.game
+        if game not in games_played:
+            games_played.append(game)
+
+    data = {
+        'user_id':user.id,
+        'first_name':user.first_name,
+        'photo': user.photo,
+        'game_played': [{
+            'id':game.id,
+            'place': game.place
+        } for game in games_played]
+    }
+    return jsonify(data)

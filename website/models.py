@@ -21,6 +21,7 @@ class Games(db.Model):
     place = db.Column(db.String(150))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
     position = db.Column(db.Integer)
+    price = db.Column(db.String(150))
     created_by = db.Column(db.Integer, db.ForeignKey('user.id'))
     rounds_played = db.relationship(
         'Rounds', back_populates='game', cascade="all,delete")

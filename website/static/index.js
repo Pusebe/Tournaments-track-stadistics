@@ -16,5 +16,29 @@ $(".winrate").each(function() {
       $(this).next().css("color", "red");
     }
       
-  
 });
+
+function tournaments(userId){
+  $.ajax({
+      url: `/user/${userId}/data`,
+      type: 'GET',
+      dataType: 'json',
+      success: (data)=> {
+        let gamesPlayedList = $('#games_played_by_'+ userId);
+        gamesPlayedList.empty();
+        for (const game of data.game_played) {
+          gamesPlayedList.append(`                        
+          <a href="" class="text-decoration-none text-dark" data-toggle="modal" data-target="#game-${game.id}">
+          <li>${game.place}</li>
+          </a>`);
+        }
+      },
+      error: (xhr, status, error)=> {
+          console.log(xhr.responseText);
+      }
+  });
+}
+
+
+
+

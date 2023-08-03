@@ -12,13 +12,6 @@
 	 background: #f9f9f9;
 	 font-family: "Montserrat", sans-serif;
 }
- .wrapper {
-	 max-width: 300px;
-	 position: relative;
-	 top: 50%;
-	 left: 50%;
-	 transform: translate(-50%, 0%);
-}
  .wrapper .wrapper__header {
 	 border-top-left-radius: 4px;
 	 border-top-right-radius: 4px;

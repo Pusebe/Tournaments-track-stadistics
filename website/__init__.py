@@ -1,8 +1,9 @@
 from flask import Flask, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from os import path
 from flask_login import LoginManager
+from sqlalchemy_utils import database_exists, create_database
 import os
+
 
 db = SQLAlchemy()
 DB_USER = 'admin'
@@ -31,6 +32,8 @@ def create_app():
     from .models import User
 
     with app.app_context():
+        if not database_exists(db.engine.url):
+            create_database(db.engine.url)
         db.create_all()
 
     login_manager = LoginManager()

@@ -1,6 +1,7 @@
 from flask import Flask, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from sqlalchemy_utils import database_exists, create_database
 import os
 
 
@@ -8,7 +9,7 @@ db = SQLAlchemy()
 DB_USER = 'admin'
 DB_HOST = 'database-2.cfukvkttheie.eu-north-1.rds.amazonaws.com'
 DB_PORT = '3306'
-DB_NAME = 'mysql+pymysql://' + DB_USER + ':' + os.environ.get('DB_PASSWORD') + '@' + DB_HOST + ':' + DB_PORT + '/'
+DB_NAME = 'mysql+pymysql://' + DB_USER + ':' + os.environ.get('DB_PASSWORD') + '@' + DB_HOST + ':' + DB_PORT + '/envite'
 UPLOAD_FOLDER = "/static/images/"
 
 
@@ -29,6 +30,8 @@ def create_app():
     from .models import User
 
     with app.app_context():
+        if not database_exists(db.engine.url):
+            create_database(db.engine.url)
         db.create_all()
 
     login_manager = LoginManager()

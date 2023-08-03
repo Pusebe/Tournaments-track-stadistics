@@ -1,11 +1,14 @@
 from flask import Flask, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from os import path
 from flask_login import LoginManager
+import os
 
 
 db = SQLAlchemy()
-DB_NAME = "mysql://root:1234@localhost/envite"
+DB_USER = 'admin'
+DB_HOST = 'database-2.cfukvkttheie.eu-north-1.rds.amazonaws.com'
+DB_PORT = '3306'
+DB_NAME = 'mysql+pymysql://' + DB_USER + ':' + os.environ.get('DB_PASSWORD') + '@' + DB_HOST + ':' + DB_PORT + '/'
 UPLOAD_FOLDER = "/static/images/"
 
 

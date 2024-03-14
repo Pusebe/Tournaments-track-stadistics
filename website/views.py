@@ -26,8 +26,7 @@ def admin_required(f):
 
 @views.route('/', methods=['GET'])
 def home():
-    return render_template("home.html", user=current_user, users= User.query.all(), winrates=top_10_winrates(), games=Games.query.filter(Games.created_at >= f'2024-01-01').Games.query.order_by(Games.created_at.desc()).all())
-
+    return render_template("home.html", user=current_user, users= User.query.all(), winrates=top_10_winrates(), games = Games.query.filter(Games.created_at >= '2024-01-01').order_by(Games.created_at.desc()).all())
 
 
 @views.route('/profile', methods=['GET', 'POST'])

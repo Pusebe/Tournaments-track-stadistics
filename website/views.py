@@ -255,3 +255,11 @@ def get_user_data(user_id):
         } for game in games_played]
     }
     return jsonify(data)
+
+@views.route('/all-players', methods=['GET'])
+def home():
+    return render_template("all_players.html", user=current_user, users= User.query.all(), winrates=all_users_by_winrate, games = Games.query.all())
+
+@views.route('/all-tournaments', methods=['GET'])
+def home():
+    return render_template("all_tournaments.html", user=current_user, users= User.query.all(), games = Games.query.order_by(Games.created_at.desc()).all())

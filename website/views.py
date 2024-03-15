@@ -235,7 +235,7 @@ def edit_users():
 
 
 
-@views.route('/user/<int:user_id>/data')
+@views.route('/user/<int:user_id>/data/<int:year>')
 def get_user_data(user_id, year=None):
     user = User.query.get(user_id)
     games_played=[]

@@ -16,10 +16,12 @@ def top_10_winrates():
     JOIN user_rounds ON rounds.id = user_rounds.round_id
     JOIN user ON user_rounds.user_id = user.id
     JOIN games ON rounds.game_number = games.id
+    WHERE EXTRACT(YEAR FROM rounds.created_at) = 2024
     GROUP BY user.id
     HAVING COUNT(*) > 0
     ORDER BY winrate DESC 
-    LIMIT 10;"""))
+    LIMIT 10;
+    """))
 
 
 def games_query():

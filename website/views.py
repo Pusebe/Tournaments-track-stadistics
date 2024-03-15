@@ -239,7 +239,8 @@ def edit_users():
 def get_user_data(user_id, year=None):
     user = User.query.get(user_id)
     games_played=[]
-
+    print("si vino year")
+    print(year)
     for round in user.rounds_played:
         game = round.game
         if year:

@@ -7,60 +7,11 @@
 <link rel="stylesheet" href="static/leaderboard.css">
 
 <div class="container">
-  <div class="row">
-    
-      <div class="wrapper col">
-        <div class="wrapper__header">
-          <div class="b_logo"><img src="https://images.vexels.com/media/users/3/135313/isolated/lists/9c44517fa04da541c35888362bce2d1b-award-trophy-icon.png" width="40" alt=""/></div>
-          <div class="b_caption">
-            <p>Porcentaje <span>Victorias 2024</span></p>
-          </div>
-        </div>
-        <div class="wrapper__content">
-          <ul>
-            {% for user in winrates %}
-            <a href="" class="text-decoration-none text-dark" data-toggle="modal" data-target="#user-{{user.id}}">
-            <li onclick="tournaments({{user.id}})">
-              <div class="graphic"><img src="{{ url_for('static', filename='images/'~user.id~'/'~user.photo~'') }}" alt="{{user.player}}"/></div>
-              <div class="name"><span class="header">{{user.first_name}} {{user.won}}/{{user.played}}</span><span class="stat winrate">{{user.winrate}}</span><span class="sub stat">%</span></div>
-            </li>
-            </a>
-              <!-- Modal user-{{user.id}} -->
-              <div class="modal fade" id="user-{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog-centered modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header bg-dark">
-                    <h5 class="modal-title text-light" id="exampleModalLabel">{{user.first_name}}</h5>
-                    <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                      Por el momento {{user.first_name}} ha ganado {{user.won}} de {{user.played}}, y se encuentra en la {{user.position}}ª posición <span id="position"></span>, con un porcentaje de victorias del {{user.winrate}}%
-                    
-                      Torneos jugados:
-                      <span id="games_played_by_{{user.id}}">
-                        <a href="" class="text-decoration-none text-dark" data-toggle="modal" data-target="#game-{{game}}">
-                        <li>  
-                        </li>
-                        </a></span>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            {% endfor %}
-          </ul>
-        </div>
-     
-    </div>
+    <div class="row justify-content-center"> <!-- Centra el contenido horizontalmente -->
+      <div class="col-md-6"> <!-- Ocupa como máximo 4 de 12 columnas en pantallas de escritorio -->
+        <div class="wrapper text-center"> <!-- Centra el contenido verticalmente y en el centro en dispositivos móviles -->
 
-
-    <div class="wrapper col">
-      <div class="wrapper__header">
         <div class="h2"><i class="bi bi-pin-map text-light"></i></div>
         <div class="b_caption">
           <p>Campeonatos <span>2024</span></p>

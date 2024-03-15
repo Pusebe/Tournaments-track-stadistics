@@ -18,7 +18,7 @@ $(".winrate").each(function() {
       
 });
 
-function tournaments(userId){
+function tournaments(userId, year){
   $.ajax({
       url: `/user/${userId}/data`,
       type: 'GET',

@@ -20,7 +20,7 @@
           <ul>
             {% for user in winrates %}
             <a href="" class="text-decoration-none text-dark" data-toggle="modal" data-target="#user-{{user.id}}">
-            <li onclick="tournaments({{user.id}})">
+            <li onclick="tournaments({{user.id}}, 2024)">
               <div class="graphic"><img src="{{ url_for('static', filename='images/'~user.id~'/'~user.photo~'') }}" alt="{{user.player}}"/></div>
               <div class="name"><span class="header">{{user.first_name}} {{user.won}}/{{user.played}}</span><span class="stat winrate">{{user.winrate}}</span><span class="sub stat">%</span></div>
             </li>

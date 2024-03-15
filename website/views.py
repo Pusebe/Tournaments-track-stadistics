@@ -236,13 +236,18 @@ def edit_users():
 
 
 @views.route('/user/<int:user_id>/data')
-def get_user_data(user_id):
+def get_user_data(user_id, year=None):
     user = User.query.get(user_id)
     games_played=[]
 
     for round in user.rounds_played:
         game = round.game
-        if game.created_at.year >= 2024:
+        if year:
+            # Verifica si la fecha de la partida es del año especificado
+            if game.created_at.year == year:
+                if game not in games_played:
+                    games_played.append(game)
+        else:
             if game not in games_played:
                 games_played.append(game)
 

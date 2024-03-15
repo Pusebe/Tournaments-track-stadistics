@@ -20,7 +20,7 @@ $(".winrate").each(function() {
 
 function tournaments(userId, year){
   $.ajax({
-      url: `/user/${userId}/data`,
+      url: `/user/${userId}?year=${year}`,
       type: 'GET',
       dataType: 'json',
       success: (data)=> {

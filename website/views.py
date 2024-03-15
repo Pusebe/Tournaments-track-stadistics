@@ -245,7 +245,7 @@ def get_user_data(user_id, year=None):
         game = round.game
         if year:
             # Verifica si la fecha de la partida es del año especificado
-            if game.created_at.year == year:
+            if game.created_at.year == int(year):
                 print("es iguasl")
                 if game not in games_played:
                     games_played.append(game)

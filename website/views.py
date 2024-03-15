@@ -242,8 +242,9 @@ def get_user_data(user_id):
 
     for round in user.rounds_played:
         game = round.game
-        if game not in games_played:
-            games_played.append(game)
+        if game.created_at.year >= 2024:
+            if game not in games_played:
+                games_played.append(game)
 
     data = {
         'user_id':user.id,

@@ -240,14 +240,13 @@ def get_user_data(user_id, year=None):
     year = request.args.get('year')
     user = User.query.get(user_id)
     games_played=[]
-    print("si vino year")
     print(year)
     for round in user.rounds_played:
         game = round.game
         if year:
             # Verifica si la fecha de la partida es del año especificado
-            print(game.created_at.year)
             if game.created_at.year == year:
+                print("es iguasl")
                 if game not in games_played:
                     games_played.append(game)
         else:

@@ -8,24 +8,34 @@ content %}
     <div class="col-auto p-0">
       <div class = "container">
         <div class="row justify-content-center">
+          <div class="col text-center">
+            {% if user.is_admin%}
+              <span style="color:rgb(5, 110, 5)">Admin</span>
+            {% endif%}
+          </div>
+      </div>
+        <div class="row justify-content-center">
           <div class="col-auto px-1 text-center">
         <div onclick="select_user({{ user.id }})" class="clickable-item">
         <label class="checkbox round-checkbox">
           <input type="checkbox" name="players" value="{{ user.id }}" {{'checked' if user == current_user else'' }}>
           <img src="{{ url_for('static', filename='images/' ~user.id~  '/' ~user.photo~'') }}" alt="" class = "">
+   
       </div>
-      </div></div>
+    </div>
           <div class="row justify-content-center">
             <div class="col text-center">
               {{user.first_name}}
             </div>
         </div>
-        </label>
+        </label>   
+      </div>
       </div>
       </div>
         {% endfor %}
   </div>
 </div>
+<div></div>
 <form method="POST" enctype="multipart/form-data">
   <h3 align="center">Editar Perfil</h3>
   <input type="hidden" id="userId" name="userId" value="{{ current_user.id }}">

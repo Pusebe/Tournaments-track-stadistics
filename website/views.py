@@ -232,7 +232,8 @@ def edit_users():
 
         flash(**message)
         db.session.commit()
-
+    if not user:
+        user = current_user
     return render_template("edit_users.html", user=user, users=User.query.all())
 
 

@@ -4,7 +4,7 @@ content %}
   {%for user in users%}
   <div onclick="select_user({{user.id}})">
       <a href="#" onclick="return false" class="list-group-item list-group-item-action"
-        >{{user.first_name}} {{user.email}} {% if user.is_admin %}<div style="color: green;">Admin</div>{%endif%}
+        >{{user.first_name}} {{user.email}} {% if user.is_admin %}<span style="color: green;">Admin</span>{%endif%}
       </a>
   </div>
   {% endfor %}

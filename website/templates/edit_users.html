@@ -2,9 +2,11 @@
 content %}
 <div class="list-group">
   {%for user in users%}
-  <a href="#" onclick="select_user({{user.id}})" class="list-group-item list-group-item-action"
-    >{{user.first_name}} {{user.email}} {{user.is_admin}}</a
-  >
+  <div onclick="select_user({{user.id}})">
+      <a href="#" class="list-group-item list-group-item-action"
+        >{{user.first_name}} {{user.email}} {{user.is_admin}}
+      </a>
+  </div>
   {% endfor %}
 </div>
 <form method="POST" enctype="multipart/form-data">

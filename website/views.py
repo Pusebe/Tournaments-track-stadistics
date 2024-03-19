@@ -249,16 +249,25 @@ def get_user_data(user_id, year=None):
         else:
             if game not in games_played:
                 games_played.append(game)
-
-    data = {
-        'user_id':user.id,
-        'first_name':user.first_name,
-        'photo': user.photo,
-        'game_played': [{
-            'id':game.id,
-            'place': game.place
-        } for game in games_played]
-    }
+    
+    if current_user.is_admin or current_user.id == user_id:
+        data = {
+            'user_id': user.id,
+            'email': user.email,
+            'first_name': user.first_name,
+            'photo': user.photo
+            # Agrega otros campos de usuario si es necesario
+        }
+    else:
+        data = {
+            'user_id':user.id,
+            'first_name':user.first_name,
+            'photo': user.photo,
+            'game_played': [{
+                'id':game.id,
+                'place': game.place
+            } for game in games_played]
+        }
     return jsonify(data)
 
 @views.route('/all-players', methods=['GET'])

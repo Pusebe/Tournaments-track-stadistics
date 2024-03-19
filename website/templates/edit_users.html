@@ -1,12 +1,12 @@
 {% extends "base.html" %} {% block title %}Editar Perfil{% endblock %} {% block
 content %}
 <div class="container-fluid p-0">
-  <div class="row justify-content-center mt-2">
+  <div class="row justify-content-center mt-2 align-items-center">
 
     {% for user in users %}
     <div class="col-auto p-0">
         <div class="container">
-            <div class="row justify-content-center">
+            <div class="row justify-content-center align-items-center">
                 <div class="col text-center">
                   <span style="color:rgb(5, 110, 5)">
                     {% if user.is_admin %}
@@ -15,7 +15,7 @@ content %}
                   </span>
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center align-items-center">
                 <div class="col-auto px-1 text-center">
                     <div onclick="select_user({{ user.id }})" class="clickable-item">
                         <label class="checkbox round-checkbox">
@@ -25,7 +25,7 @@ content %}
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center">
+            <div class="row justify-content-center align-items-center">
                 <div class="col text-center">
                     {{ user.first_name }}
                 </div>

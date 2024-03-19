@@ -21,7 +21,7 @@ content %}
                 <div class="col-auto px-1 text-center">
                     <div onclick="select_user({{ user_to_edit.id }})" class="clickable-item">
                         <label class="checkbox round-checkbox">
-                            <input type="checkbox" name="players" value="{{ user_to_edit.id }}" {{ 'checked' if user_to_edit.id == current_user.id else '' }}>
+                            <input type="checkbox" name="players" value="{{ user_to_edit.id }}" {{ 'checked' if user_to_edit.id == user.id else '' }}>
                             <img src="{{ url_for('static', filename='images/' ~ user_to_edit.id ~ '/' ~ user_to_edit.photo) }}" alt="" class="">
                         </label>
                     </div>

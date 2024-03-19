@@ -199,6 +199,7 @@ def edit_users():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         user_id = request.form.get('userId')
+        print(user_id)
         photo = request.files["photo"]
         updated = False
         if email != user_id.email and email:

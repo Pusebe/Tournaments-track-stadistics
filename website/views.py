@@ -237,10 +237,10 @@ def edit_users():
 
         flash(**message)
         db.session.commit()
-        return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
+        return render_template("edit_users.html", user_to_edit=user, current_user=current_user, users=User.query.all())
     if not user:
-        user = current_user
-    return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
+        user_to_edit = current_user
+    return render_template("edit_users.html", user_to_edit=user_to_edit, current_user=current_user, users=User.query.all())
 
 
 @views.route('/user/<int:user_id>/data')

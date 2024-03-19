@@ -203,33 +203,37 @@ def edit_users():
         user = User.query.get(user_id)
         photo = request.files["photo"]
         updated = False
-        if email != user.email and email:
-            user.email = email
-            updated = True
-        if name != user.first_name and name:
-            user.first_name = name
-            updated = True
-        if photo.filename:
-            photo_name = secure_filename(photo.filename)
-            ruta_carpeta = os. getcwd()+"/website/static/images/"+str(user)
-            os.makedirs(ruta_carpeta, exist_ok=True)
-            photo.save(os.path.join(ruta_carpeta, photo_name))
-            user.photo = photo.filename
-            updated = True
-        if password1 != password2 and password1:
-            flash('El password no coincide.', category='error')
-        elif password1 and len(password1) < 4:
-            flash('Password must be at least 4 characters.', category='error')
-        elif password1:
-            user.password = generate_password_hash(
-                password1, method='sha256')
-            updated = True
-        if updated:
-            message = {'message': '¡Actualizado con éxito!',
-                       'category': 'success'}
-        else:
-            message = {'message': 'No se ha modificado ningún campo',
+        if user.is_admin and user is not current_user:
+            message = {'message': '¡No puedes modificar otro Admin!',
                        'category': 'error'}
+        else:
+            if email != user.email and email:
+                user.email = email
+                updated = True
+            if name != user.first_name and name:
+                user.first_name = name
+                updated = True
+            if photo.filename:
+                photo_name = secure_filename(photo.filename)
+                ruta_carpeta = os. getcwd()+"/website/static/images/"+str(user)
+                os.makedirs(ruta_carpeta, exist_ok=True)
+                photo.save(os.path.join(ruta_carpeta, photo_name))
+                user.photo = photo.filename
+                updated = True
+            if password1 != password2 and password1:
+                flash('El password no coincide.', category='error')
+            elif password1 and len(password1) < 4:
+                flash('Password must be at least 4 characters.', category='error')
+            elif password1:
+                user.password = generate_password_hash(
+                    password1, method='sha256')
+                updated = True
+            if updated:
+                message = {'message': '¡Actualizado con éxito!',
+                        'category': 'success'}
+            else:
+                message = {'message': 'No se ha modificado ningún campo',
+                        'category': 'error'}
 
         flash(**message)
         db.session.commit()

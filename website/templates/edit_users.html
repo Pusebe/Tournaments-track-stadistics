@@ -14,7 +14,7 @@ content %}
           <input type="checkbox" name="players" value="{{ user.id }}" {{'checked' if user == current_user else'' }}>
           <img src="{{ url_for('static', filename='images/' ~user.id~  '/' ~user.photo~'') }}" alt="" class = "">
       </div>
-      </div>
+      </div></div>
           <div class="row justify-content-center">
             <div class="col text-center">
               {{user.first_name}}

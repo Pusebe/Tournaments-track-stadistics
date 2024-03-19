@@ -48,6 +48,7 @@ function select_user(userId){
       success: response => {
         console.log('Datos del usuario:', response);
         // Actualizar el formulario con los datos del usuario
+        $('#userId').val(response.user_id);
         $('#email').val(response.email);
         $('#firstName').val(response.first_name);
         // Actualiza la imagen de perfil si está disponible

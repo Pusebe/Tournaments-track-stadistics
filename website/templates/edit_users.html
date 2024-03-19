@@ -9,8 +9,9 @@ content %}
   </div>
   {% endfor %}
 </div>
-<form method="POST" enctype="multipart/form-data">
+<form method="POST"  action="/profile" enctype="multipart/form-data">
   <h3 align="center">Editar Perfil</h3>
+  <input type="hidden" id="userId" name="userId" value="{{ current_user.id }}">
   <img
     src="{{ url_for('static', filename='images/'~user.id~'/'~user.photo~'') }}"
     alt="{{user.first_name}}"

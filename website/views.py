@@ -198,27 +198,28 @@ def edit_users():
         name = request.form.get('firstName')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
+        user_id = request.form.get('userId')
         photo = request.files["photo"]
         updated = False
-        if email != current_user.email and email:
-            current_user.email = email
+        if email != user_id.email and email:
+            user_id.email = email
             updated = True
-        if name != current_user.first_name and name:
-            current_user.first_name = name
+        if name != user_id.first_name and name:
+            user_id.first_name = name
             updated = True
         if photo.filename:
             photo_name = secure_filename(photo.filename)
-            ruta_carpeta = os. getcwd()+"/website/static/images/"+str(current_user.id)
+            ruta_carpeta = os. getcwd()+"/website/static/images/"+str(user_id)
             os.makedirs(ruta_carpeta, exist_ok=True)
             photo.save(os.path.join(ruta_carpeta, photo_name))
-            current_user.photo = photo.filename
+            user_id.photo = photo.filename
             updated = True
         if password1 != password2 and password1:
             flash('El password no coincide.', category='error')
         elif password1 and len(password1) < 4:
             flash('Password must be at least 4 characters.', category='error')
         elif password1:
-            current_user.password = generate_password_hash(
+            user_id.password = generate_password_hash(
                 password1, method='sha256')
             updated = True
         if updated:

@@ -255,7 +255,11 @@ def get_user_data(user_id, year=None):
             'user_id': user.id,
             'email': user.email,
             'first_name': user.first_name,
-            'photo': user.photo
+            'photo': user.photo,
+            'game_played': [{
+                'id':game.id,
+                'place': game.place
+            } for game in games_played]
             # Agrega otros campos de usuario si es necesario
         }
     else:

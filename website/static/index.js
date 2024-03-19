@@ -49,9 +49,10 @@ function select_user(userId){
         console.log('Datos del usuario:', response);
         // Actualizar el formulario con los datos del usuario
         $('#email').val(response.email);
-        $('#firstName').val(response.firstName);
+        $('#firstName').val(response.first_name);
         // Actualiza la imagen de perfil si está disponible
         if (response.photo) {
+          console.log("debería cambiar la foto tmb eh")
           $('#profileImage').attr('src', '/static/images/' + userId + '/' + response.photo);
         }
       },

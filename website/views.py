@@ -230,7 +230,7 @@ def edit_users():
                        'category': 'error'}
 
         flash(**message)
-        #db.session.commit()
+        db.session.commit()
 
     return render_template("edit_users.html", user=current_user, users=User.query.all())
 

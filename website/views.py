@@ -239,7 +239,7 @@ def edit_users():
         db.session.commit()
     if not user:
         user = current_user
-    return render_template("edit_users.html", user=user, users=User.query.all())
+    return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
 
 
 @views.route('/user/<int:user_id>/data')

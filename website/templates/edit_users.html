@@ -10,6 +10,27 @@ content %}
         </div>
       </div>
     {% endfor %}
+
+    {% for user in users %}
+            
+    <div class="col-auto p-0">
+      <div class = "container">
+        <div class="row justify-content-center">
+          <div class="col-auto px-1 text-center">
+        <label class="checkbox round-checkbox">
+          <input type="checkbox" name="players" value="{{ user.id }}" {{'checked' if user == current_user'' }}>
+          <img src="{{ url_for('static', filename='images/' ~user.id~  '/' ~user.photo~'') }}" alt="" class = "">
+      </div>
+      </div>
+          <div class="row justify-content-center">
+            <div class="col text-center">
+              {{user.first_name}}
+            </div>
+        </div>
+        </label>
+      </div>
+      </div>
+        {% endfor %}
   </div>
 </div>
 <form method="POST" enctype="multipart/form-data">

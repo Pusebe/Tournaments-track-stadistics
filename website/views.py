@@ -215,7 +215,7 @@ def edit_users():
                 updated = True
             if photo.filename:
                 photo_name = secure_filename(photo.filename)
-                ruta_carpeta = os. getcwd()+"/website/static/images/"+str(user)
+                ruta_carpeta = os. getcwd()+"/website/static/images/"+str(user.id)
                 os.makedirs(ruta_carpeta, exist_ok=True)
                 photo.save(os.path.join(ruta_carpeta, photo_name))
                 user.photo = photo.filename

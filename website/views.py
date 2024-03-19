@@ -234,7 +234,6 @@ def edit_users():
     return render_template("edit_users.html", user=current_user, users=User.query.all())
 
 
-
 @views.route('/user/<int:user_id>/data')
 def get_user_data(user_id, year=None):
     year = request.args.get('year')

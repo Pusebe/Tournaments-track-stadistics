@@ -1,6 +1,5 @@
 {% extends "base.html" %} {% block title %}Editar Perfil{% endblock %} {% block
 content %}
-<div class="list-group">
   {%for user in users%}
   <div onclick="select_user({{user.id}})">
   <div class="col">
@@ -20,7 +19,6 @@ content %}
   </div>
 
   {% endfor %}
-</div>
 <form method="POST" enctype="multipart/form-data">
   <h3 align="center">Editar Perfil</h3>
   <input type="hidden" id="userId" name="userId" value="{{ current_user.id }}">

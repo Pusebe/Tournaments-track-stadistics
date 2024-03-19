@@ -5,7 +5,7 @@ content %}
     {% for user in users %}
       <div class="col px-1">
         <div onclick="select_user({{ user.id }})" class="clickable-item">
-          <img src="{{ url_for('static', filename='images/' ~ user.id ~ '/' ~ user.photo) }}" alt="" class="round-img">
+          <img src="{{ url_for('static', filename='images/' ~ user.id ~ '/' ~ user.photo) }}" alt="" class="round-img text-center">
           <div class="text-center">{{ user.first_name }}</div>
         </div>
       </div>

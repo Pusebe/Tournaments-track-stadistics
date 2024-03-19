@@ -2,7 +2,7 @@
 %}
 <form method="POST" enctype="multipart/form-data">
   <h3 align="center">Editar Perfil</h3>
-  <img id="profileImage" src="{{ url_for('static', filename='images/'~user.id~'/'~user.photo~'') }}" alt="{{user.first_name}}" class="img-thumbnail mx-auto d-block" style="width: 200px; height: 200px;">
+  <img src="{{ url_for('static', filename='images/'~user.id~'/'~user.photo~'') }}" alt="{{user.first_name}}" class="img-thumbnail mx-auto d-block" style="width: 200px; height: 200px;">
   <div class="form-group">
     <label for="email">Email</label>
     <input

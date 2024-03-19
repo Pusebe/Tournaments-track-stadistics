@@ -3,7 +3,7 @@ content %}
 <div class="list-group">
   {%for user in users%}
   <div onclick="select_user({{user.id}})">
-      <a href="#" class="list-group-item list-group-item-action"
+      <a href="#" onclick="return false" class="list-group-item list-group-item-action"
         >{{user.first_name}} {{user.email}} {{user.is_admin}}
       </a>
   </div>

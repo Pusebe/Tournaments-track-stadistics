@@ -193,6 +193,7 @@ def delete_game():
 @views.route('dashboard/edit-users', methods=['GET', 'POST'])
 @admin_required
 def edit_users():
+    user = None
     if request.method == 'POST':
         email = request.form.get('email')
         name = request.form.get('firstName')

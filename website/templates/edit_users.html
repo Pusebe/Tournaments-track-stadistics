@@ -11,6 +11,8 @@ content %}
                   <span style="color:rgb(5, 110, 5)">
                     {% if user.is_admin %}
                         Admin
+                        {% else %}
+                          &nbsp; <!-- Espacio reservado si no es admin -->
                     {% endif %}
                   </span>
                 </div>

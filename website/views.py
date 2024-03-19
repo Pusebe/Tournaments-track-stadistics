@@ -199,7 +199,6 @@ def edit_users():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         user_id = request.form.get('userId')
-        print(user_id)
         photo = request.files["photo"]
         updated = False
         if email != user_id.email and email:
@@ -231,7 +230,7 @@ def edit_users():
                        'category': 'error'}
 
         flash(**message)
-        db.session.commit()
+        #db.session.commit()
 
     return render_template("edit_users.html", user=current_user, users=User.query.all())
 

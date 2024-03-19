@@ -3,13 +3,13 @@ content %}
 <div class="container-fluid p-0">
   <div class="row justify-content-center mt-2 align-items-center">
 
-    {% for user in users %}
+    {% for user_to_edit in users %}
     <div class="col-auto p-0">
         <div class="container">
             <div class="row justify-content-center align-items-center">
                 <div class="col text-center">
                   <span style="color:rgb(5, 110, 5)">
-                    {% if user.is_admin %}
+                    {% if user_to_edit.is_admin %}
                         Admin
                         {% else %}
                           &nbsp; <!-- Espacio reservado si no es admin -->
@@ -19,17 +19,17 @@ content %}
             </div>
             <div class="row justify-content-center align-items-center">
                 <div class="col-auto px-1 text-center">
-                    <div onclick="select_user({{ user.id }})" class="clickable-item">
+                    <div onclick="select_user({{ user_to_edit.id }})" class="clickable-item">
                         <label class="checkbox round-checkbox">
-                            <input type="checkbox" name="players" value="{{ user.id }}" {{ 'checked' if user.id == current_user.id else '' }}>
-                            <img src="{{ url_for('static', filename='images/' ~ user.id ~ '/' ~ user.photo) }}" alt="" class="">
+                            <input type="checkbox" name="players" value="{{ user_to_edit.id }}" {{ 'checked' if user_to_edit.id == current_user.id else '' }}>
+                            <img src="{{ url_for('static', filename='images/' ~ user_to_edit.id ~ '/' ~ user_to_edit.photo) }}" alt="" class="">
                         </label>
                     </div>
                 </div>
             </div>
             <div class="row justify-content-center align-items-center">
                 <div class="col text-center">
-                    {{ user.first_name }}
+                    {{ user_to_edit.first_name }}
                 </div>
             </div>
         </div>

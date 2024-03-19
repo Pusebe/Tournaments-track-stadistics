@@ -52,7 +52,8 @@ function select_user(userId){
         $('#firstName').val(response.first_name);
         // Actualiza la imagen de perfil si está disponible
         if (response.photo) {
-          $('#profileImage').attr('src', '/static/images/' + response.user_id + '/' + response.photo);
+          $('#profileImage').attr('src', '');
+          //$('#profileImage').attr('src', '/static/images/' + response.user_id + '/' + response.photo);
         }
       },
       error: function(xhr, status, error) {

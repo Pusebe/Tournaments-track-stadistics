@@ -54,7 +54,7 @@ function delete_user(userId) {
     body: JSON.stringify({ userId: userId }),
   }).then(response => {
     if (response.ok) {
-      window.location.href = "/dashboard/games";
+      window.location.href = "/dashboard/edit-users";
       // Si la respuesta del servidor es satisfactoria, realiza alguna acción en el cliente.
       console.log('Usuario eliminado con éxito.');
     } else {

@@ -38,7 +38,7 @@ function select_user(userId){
     // Actualiza el texto del cuerpo del modal
     $('#delete-user .modal-body').text('¿Deseas borrar el usuario ' + response.first_name + '?');
     // Actualiza el atributo onclick del botón "Confirmar" con el ID del usuario
-    $('#delete-user .modal-footer button[data-dismiss="modal"]').attr('onclick', 'delete_user(' + response.user_id + ')');
+    $('#delete-user .confirm').attr('onclick', 'delete_user(' + response.user_id + ')');
 
     },
     error: function(xhr, status, error) {

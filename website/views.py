@@ -271,7 +271,7 @@ def create_users():
             flash('Account created!', category='success')
             return redirect(url_for('views.dashboard/edit-users'))
         
-    return redirect(url_for('views.dashboard/edit-users'))
+    return redirect(url_for('views.edit_users'))
 
 @views.route('/user/<int:user_id>/data')
 def get_user_data(user_id, year=None):

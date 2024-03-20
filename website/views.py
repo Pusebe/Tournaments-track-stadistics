@@ -267,7 +267,7 @@ def create_users():
                 password1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()
-            login_user(new_user, remember=True)
+            #login_user(new_user, remember=True)
             flash('Usuario creado con éxito', category='success')
             return render_template("edit_users.html", user=new_user, current_user=current_user, users=User.query.all())
         

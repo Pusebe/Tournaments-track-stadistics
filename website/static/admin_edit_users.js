@@ -4,7 +4,7 @@
     $('input[type="checkbox"][name="players"]').not(this).prop('checked', false);
   });
 
-function delete_info(){
+function delete_info(form_path){
   $('#userId').val("");
   $('#email').val("");
   $('#firstName').val("");
@@ -12,7 +12,7 @@ function delete_info(){
   $('#profileImage').attr('src', '');
   //Si se va a crear un nuevo usuario el form debe enviar a otra ruta:
   var form = document.getElementById('editUsersForm');
-  form.action = "{{ url_for('views.edit_users') }}";
+  form.action = form_path;
 }  
 
 

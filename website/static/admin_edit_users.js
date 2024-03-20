@@ -25,6 +25,7 @@ function select_user(userId){
     type: 'GET',
     success: response => {
       console.log('Datos del usuario:', response);
+  
       // Actualizar el formulario con los datos del usuario
       $('#userId').val(response.user_id);
       $('#email').val(response.email);
@@ -33,9 +34,9 @@ function select_user(userId){
       $('#profileImage').attr('src', '/static/images/' + response.user_id + '/' + response.photo);
       form.action = ""
     // Actualiza el título del modal con el nombre del usuario
-    $('#exampleModalLongTitle').text('Borrar ' + response.user_id.first_name);
+    $('#exampleModalLongTitle').text('Borrar ' + response.first_name);
     // Actualiza el texto del cuerpo del modal
-    $('#delete-user .modal-body').text('¿Deseas borrar el usuario ' + response.user_id.first_name + '?');
+    $('#delete-user .modal-body').text('¿Deseas borrar el usuario ' + response.first_name + '?');
     // Actualiza el atributo onclick del botón "Confirmar" con el ID del usuario
     $('#delete-user .modal-footer button[data-dismiss="modal"]').attr('onclick', 'delete_user(' + response.user_id + ')');
 

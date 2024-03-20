@@ -208,6 +208,13 @@ def edit_users():
                        'category': 'error'}
         else:
             if email != user.email and email:
+                existing_user = User.query.filter_by(email=email).first()
+                if existing_user:
+                    flash('¡El email ya está en uso por otro usuario!', category='error')
+                return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
+            else:
+                user.email = email
+                updated = True
                 user.email = email
                 updated = True
             if name != user.first_name and name:

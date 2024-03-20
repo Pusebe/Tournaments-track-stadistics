@@ -40,3 +40,23 @@ function select_user(userId){
   });
 }
 
+function delete_user(userId) {
+  fetch("/delete-user", {
+    method: "POST",
+    body: JSON.stringify({ userId: userId }),
+  }).then(response => {
+    if (response.ok) {
+      window.location.href = "/dashboard/games";
+      // Si la respuesta del servidor es satisfactoria, realiza alguna acción en el cliente.
+      console.log('Usuario eliminado con éxito.');
+    } else {
+      // Si la respuesta del servidor es errónea, maneja el error en el cliente.
+      console.error('Error al actualizar la ronda:', response.status);
+    }
+  })
+  .catch(error => {
+    // Si hay algún error en la solicitud, maneja el error en el cliente.
+    console.error('Error en la solicitud:', error);
+  });
+}
+

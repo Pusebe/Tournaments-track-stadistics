@@ -189,6 +189,17 @@ def delete_game():
 
     return jsonify({})
 
+@views.route('/delete-user', methods=['POST'])
+@admin_required
+def delete_user():
+    # this function expects a JSON from the INDEX.js file
+    user = json.loads(request.data)
+    userId = user['userId']
+    user = User.query.get(userId)
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({})
 
 @views.route('dashboard/edit-users', methods=['GET', 'POST'])
 @admin_required

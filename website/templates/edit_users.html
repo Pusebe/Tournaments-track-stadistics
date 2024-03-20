@@ -35,19 +35,16 @@ content %}
         </div>
     </div>
 {% endfor %}
-<div class="card mb-1">
-  <div class="card-header bg-dark text-light">
-    Añadir Campeonato
-  </div>
+
   <div class="card-body text-center p-2 ">
-    <a class="text-decoration-none text-dark" href="" data-toggle="modal" data-target="#add-place"> <i class="bi bi-plus-circle h2 text-dark"></i></a>
+    <a class="text-decoration-none text-dark" href="" data-toggle="modal" onclick="delele_info()"> <i class="bi bi-plus-circle h2 text-dark"></i></a>
   </div>
-</div> 
+
 
   </div>
 </div>
 <div></div>
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" id="editUsersForm" enctype="multipart/form-data">
   <h3 align="center">Editar Perfil</h3>
   <input type="hidden" id="userId" name="userId" value="{{ current_user.id }}">
   <img

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
-from flask_login import login_required, current_user
+from flask_login import login_required, current_user, login_user
 from .models import Games, User, Rounds
 from .sql import *
 import json
@@ -242,6 +242,36 @@ def edit_users():
         user = current_user
     return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
 
+@views.route('dashboard/create_users', methods=['GET', 'POST'])
+@admin_required
+def create_users():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        first_name = request.form.get('firstName')
+        password1 = request.form.get('password1')
+        password2 = request.form.get('password2')
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash('El email ya existe', category='error')
+        elif len(email) < 4:
+            flash('Email must be greater than 3 characters.', category='error')
+        elif len(first_name) < 2:
+            flash('First name must be greater than 1 character.', category='error')
+        elif password1 != password2:
+            flash('El password no coincide.', category='error')
+        elif len(password1) < 4:
+            flash('Password must be at least 4 characters.', category='error')
+        else:
+            new_user = User(email=email, first_name=first_name, password=generate_password_hash(
+                password1, method='sha256'))
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user, remember=True)
+            flash('Account created!', category='success')
+            return redirect(url_for('views.dashboard/edit-users'))
+        
+    return redirect(url_for('views.dashboard/edit-users'))
 
 @views.route('/user/<int:user_id>/data')
 def get_user_data(user_id, year=None):

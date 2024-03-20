@@ -269,7 +269,7 @@ def create_users():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
-            return redirect(url_for('views.dashboard/edit-users'))
+            return redirect(url_for('views.edit_users'))
         
     return redirect(url_for('views.edit_users'))
 

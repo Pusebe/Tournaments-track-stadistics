@@ -30,9 +30,7 @@ function select_user(userId){
       $('#email').val(response.email);
       $('#firstName').val(response.first_name);
       // Actualiza la imagen de perfil si está disponible
-      if (response.photo) {
-        $('#profileImage').attr('src', '/static/images/' + response.user_id + '/' + response.photo);
-      }
+      $('#profileImage').attr('src', '/static/images/' + response.user_id + '/' + response.photo);
       form.action = ""
     },
     error: function(xhr, status, error) {

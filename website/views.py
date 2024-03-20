@@ -269,8 +269,9 @@ def create_users():
             db.session.commit()
             #login_user(new_user, remember=True)
             flash('Usuario creado con éxito', category='success')
-            return render_template("edit_users.html", user=new_user, current_user=current_user, users=User.query.all())
-        
+            #return render_template("edit_users.html", user=new_user, current_user=current_user, users=User.query.all())
+            return redirect(url_for('views.edit_users'))
+
    #return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
 
 @views.route('/user/<int:user_id>/data')

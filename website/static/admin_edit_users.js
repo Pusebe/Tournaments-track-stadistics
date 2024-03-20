@@ -59,6 +59,7 @@ function delete_user(userId) {
       console.log('Usuario eliminado con éxito.');
     } else {
       // Si la respuesta del servidor es errónea, maneja el error en el cliente.
+      alert('Revisa que elegiste al usuario corresto ')
       console.error('Error al actualizar la ronda:', response.status);
     }
   })

@@ -268,7 +268,7 @@ def create_users():
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
-            flash('Account created!', category='success')
+            flash('Usuario creado con éxito', category='success')
             return redirect(url_for('views.edit_users'))
         
     return redirect(url_for('views.edit_users'))

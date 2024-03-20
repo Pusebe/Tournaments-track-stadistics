@@ -242,7 +242,7 @@ def edit_users():
         user = current_user
     return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
 
-@views.route('dashboard/create_users', methods=['GET', 'POST'])
+@views.route('dashboard/create_users', methods=['POST'])
 @admin_required
 def create_users():
     if request.method == 'POST':
@@ -269,9 +269,9 @@ def create_users():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Usuario creado con éxito', category='success')
-            return redirect(url_for('views.edit_users'))
+            return render_template("edit_users.html", user=new_user, current_user=current_user, users=User.query.all())
         
-    return redirect(url_for('views.edit_users'))
+   #return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
 
 @views.route('/user/<int:user_id>/data')
 def get_user_data(user_id, year=None):

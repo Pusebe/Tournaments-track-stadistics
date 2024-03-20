@@ -48,9 +48,9 @@
         <div class="navbar-nav">
           <a class="nav-item nav-link" id="home" href="/">Inicio</a>
 
-          {% if user.is_authenticated %}
+          {% if current_user.is_authenticated %}
           <a class="nav-item nav-link" id="logout" href="/profile">Perfil</a>
-            {%if user.is_admin %}
+            {%if current_user.is_admin %}
           <a class="nav-item nav-link" id="logout" href="/dashboard">Panel de Control</a>
             {% endif %}
           
@@ -59,11 +59,11 @@
           <a class="nav-item nav-link" id="signUp" href="/all-tournaments">Torneos</a>
           <a class="nav-item nav-link" id="signUp" href="/all-players">Jugadores</a>
 
-          {% if not user.is_authenticated %}
+          {% if not current_user.is_authenticated %}
           <a class="nav-item nav-link" id="login" href="/login">Iniciar sesión</a>
           <a class="nav-item nav-link" id="signUp" href="/sign-up">Nuevo jugador</a>
           {% endif %}
-          {% if user.is_authenticated %}
+          {% if current_user.is_authenticated %}
           <a class="nav-item nav-link" id="logout" href="/logout">Salir</a>
           {% endif %}
         </div>

@@ -319,11 +319,9 @@ def get_user_data(user_id, year=None):
     }
 
     # Comprobar si el usuario está autenticado
-    if current_user.is_authenticated:
-        # Verificar si es administrador o el usuario con el ID especificado
-        if current_user.is_admin or current_user.id == user_id:
+    if current_user.is_authenticated and (current_user.is_admin or current_user.id == user_id):
             # Si es admin o usuario actual, agregar email y estado "1"
-            data.update({'email': user.email, 'status': "1"})
+        data.update({'email': user.email})
 
     return jsonify(data)
 

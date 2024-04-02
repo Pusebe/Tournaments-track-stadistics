@@ -307,31 +307,24 @@ def get_user_data(user_id, year=None):
         else:
             if game not in games_played:
                 games_played.append(game)
-    
-    if current_user.is_admin or current_user.id == user_id:
-        data = {
-            'user_id': user.id,
-            'email': user.email,
-            'first_name': user.first_name,
-            'photo': user.photo,
-            'status':"1",
-            'game_played': [{
-                'id':game.id,
-                'place': game.place
-            } for game in games_played]
-            # Agrega otros campos de usuario si es necesario
-        }
-    else:
-        data = {
-            'user_id':user.id,
-            'first_name':user.first_name,
-            'photo': user.photo,
-            'status':"2",
-            'game_played': [{
-                'id':game.id,
-                'place': game.place
-            } for game in games_played]
-        }
+    # Diccionario base con datos comunes a todos los usuarios
+    data = {
+        'user_id': user.id,
+        'first_name': user.first_name,
+        'photo': user.photo,
+        'game_played': [{
+            'id': game.id, 
+            'place': game.place} for game in games_played
+            ]
+    }
+
+    # Comprobar si el usuario está autenticado
+    if current_user.is_authenticated:
+        # Verificar si es administrador o el usuario con el ID especificado
+        if current_user.is_admin or current_user.id == user_id:
+            # Si es admin o usuario actual, agregar email y estado "1"
+            data.update({'email': user.email, 'status': "1"})
+
     return jsonify(data)
 
 @views.route('/all-players', methods=['GET'])

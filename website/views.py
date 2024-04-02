@@ -317,7 +317,6 @@ def get_user_data(user_id, year=None):
             'place': game.place} for game in games_played
             ]
     }
-
     # Comprobar si el usuario está autenticado
     if current_user.is_authenticated and (current_user.is_admin or current_user.id == user_id):
             # Si es admin o usuario actual, agregar email

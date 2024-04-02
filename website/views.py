@@ -314,6 +314,7 @@ def get_user_data(user_id, year=None):
             'email': user.email,
             'first_name': user.first_name,
             'photo': user.photo,
+            'status':"1",
             'game_played': [{
                 'id':game.id,
                 'place': game.place
@@ -325,6 +326,7 @@ def get_user_data(user_id, year=None):
             'user_id':user.id,
             'first_name':user.first_name,
             'photo': user.photo,
+            'status':"2",
             'game_played': [{
                 'id':game.id,
                 'place': game.place

@@ -33,6 +33,7 @@ function tournaments(userId, year){
           <li>${game.place}</li>
           </a>`);
         }
+        console.log(data.status)
       },
       error: (xhr, status, error)=> {
           console.log(xhr.responseText);

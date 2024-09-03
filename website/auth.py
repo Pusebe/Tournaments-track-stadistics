@@ -64,6 +64,6 @@ def sign_up():
             flash('Account created!', category='success')
             return redirect(url_for('views.edit_users'))
 
-    return redirect(url_for('views.edit_users'))
+    return render_template("sign_up.html")  # Renderiza el formulario de registro
 
 

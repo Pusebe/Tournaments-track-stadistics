@@ -4,13 +4,18 @@ from flask_login import LoginManager
 from sqlalchemy_utils import database_exists, create_database
 import os
 
+db = SQLAlchemy()
+DB_NAME = 'sqlite:///database.db'
+UPLOAD_FOLDER = "/static/images/"
 
+'''
 db = SQLAlchemy()
 DB_USER = 'admin'
 DB_HOST = 'database-2.cfukvkttheie.eu-north-1.rds.amazonaws.com'
 DB_PORT = '3306'
 DB_NAME = 'mysql+pymysql://' + DB_USER + ':' + os.environ.get('DB_PASSWORD') + '@' + DB_HOST + ':' + DB_PORT + '/envite'
 UPLOAD_FOLDER = "/static/images/"
+'''
 
 
 def create_app():

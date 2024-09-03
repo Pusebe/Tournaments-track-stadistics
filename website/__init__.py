@@ -32,7 +32,8 @@ UPLOAD_FOLDER = "/static/images/"
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
-    app.config['SQLALCHEMY_DATABASE_URI'] = DB_NAME
+    app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
+    #app.config['SQLALCHEMY_DATABASE_URI'] = DB_NAME
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     db.init_app(app)

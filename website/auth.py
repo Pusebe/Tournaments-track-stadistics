@@ -17,8 +17,7 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user:
-            if True:
-            #if check_password_hash(user.password, password):
+            if check_password_hash(user.password, password):
                 flash('Acceso correcto', category='success')
                 login_user(user, remember=True)
                 print(user.first_name + " Se logueo")

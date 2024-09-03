@@ -58,7 +58,7 @@ def profile():
             flash('Password must be at least 4 characters.', category='error')
         elif password1:
             current_user.password = generate_password_hash(
-                password1, method='sha256')
+                password1, method='pbkdf2:sha256')
             updated = True
         if updated:
             message = {'message': '¡Actualizado con éxito!',
@@ -244,7 +244,7 @@ def edit_users():
                 flash('Password must be at least 4 characters.', category='error')
             elif password1:
                 user.password = generate_password_hash(
-                    password1, method='sha256')
+                    password1, method='pbkdf2:sha256')
                 updated = True
             if updated:
                 message = {'message': '¡Actualizado con éxito!',
@@ -282,7 +282,7 @@ def create_users():
             flash('Password must be at least 4 characters.', category='error')
         else:
             new_user = User(email=email, first_name=first_name, password=generate_password_hash(
-                password1, method='sha256'))
+                password1, method='pbkdf2:sha256'))
             db.session.add(new_user)
             db.session.commit()
             #login_user(new_user, remember=True)

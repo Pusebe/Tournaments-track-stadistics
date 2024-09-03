@@ -17,6 +17,17 @@ DB_NAME = 'mysql+pymysql://' + DB_USER + ':' + os.environ.get('DB_PASSWORD') + '
 UPLOAD_FOLDER = "/static/images/"
 '''
 
+# Configuración de la base de datos
+DB_USER = 'root'
+DB_HOST = 'localhost'
+DB_PORT = '3306'
+DB_NAME = 'envite'  # Nombre de tu base de datos
+
+# Cadena de conexión
+DB_PASSWORD = os.environ.get('DB_PASSWORD', '')  # Asegúrate de que esta variable de entorno esté configurada
+DATABASE_URI = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+
+UPLOAD_FOLDER = "/static/images/"
 
 def create_app():
     app = Flask(__name__)

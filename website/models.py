@@ -9,7 +9,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     created_at = db.Column(db.DateTime(timezone=True), default=func.now())
-    photo = db.Column(db.String(150))
+    photo = db.Column(db.String(256))
     is_admin = db.Column(db.Boolean, default=False)
     rounds_played = db.relationship(
         'Rounds', secondary='user_rounds', back_populates='players')

@@ -2,3 +2,4 @@
 website/__pycache__
 website/database.db
 desktop.ini
+website/static/images

@@ -3,44 +3,51 @@ from sqlalchemy.sql import text
 from . import db
 
 
-def top_10_winrates():
-
-    return db.session.execute(text("""
+def get_users_by_winrate(year=None, limit=None):
+    """
+    Obtiene usuarios ordenados por winrate, con opción de filtrar por año y limitar resultados.
+    
+    :param year: Año para filtrar los resultados (opcional, None para todos los años).
+    :param limit: Número máximo de resultados (opcional, None para todos).
+    :return: Resultado de la consulta SQL.
+    """
+    query = """
     SELECT 
-    ROW_NUMBER() OVER (ORDER BY TRUNCATE(ROUND(COUNT(CASE WHEN victory = 1 THEN 1 ELSE NULL END) / COUNT(*) * 100, 0), 0) DESC) AS position,
-    TRUNCATE(ROUND(COUNT(CASE WHEN victory = 1 THEN 1 ELSE NULL END) / COUNT(*) * 100, 0), 0) AS winrate,
-    COUNT(victory) AS played,
-    SUM(victory) AS won,
-    user.*
+        ROW_NUMBER() OVER (ORDER BY TRUNCATE(ROUND(COUNT(CASE WHEN victory = 1 THEN 1 ELSE NULL END) / COUNT(*) * 100, 0), 0) DESC) AS position,
+        TRUNCATE(ROUND(COUNT(CASE WHEN victory = 1 THEN 1 ELSE NULL END) / COUNT(*) * 100, 0), 0) AS winrate,
+        COUNT(victory) AS played,
+        SUM(victory) AS won,
+        user.*
     FROM rounds 
     JOIN user_rounds ON rounds.id = user_rounds.round_id
     JOIN user ON user_rounds.user_id = user.id
     JOIN games ON rounds.game_number = games.id
-    WHERE EXTRACT(YEAR FROM rounds.created_at) = 2024
+    """
+
+    # Agregar filtro por año si se proporciona
+    if year is not None:
+        query += " WHERE EXTRACT(YEAR FROM rounds.created_at) = :year"
+
+    query += """
     GROUP BY user.id
     HAVING COUNT(*) > 0
-    ORDER BY winrate DESC 
-    LIMIT 10;
-    """))
+    ORDER BY winrate DESC
+    """
 
-def all_users_by_winrate():
+    # Agregar límite si se proporciona
+    if limit is not None:
+        query += " LIMIT :limit"
 
-    return db.session.execute(text("""
-    SELECT 
-    ROW_NUMBER() OVER (ORDER BY TRUNCATE(ROUND(COUNT(CASE WHEN victory = 1 THEN 1 ELSE NULL END) / COUNT(*) * 100, 0), 0) DESC) AS position,
-    TRUNCATE(ROUND(COUNT(CASE WHEN victory = 1 THEN 1 ELSE NULL END) / COUNT(*) * 100, 0), 0) AS winrate,
-    COUNT(victory) AS played,
-    SUM(victory) AS won,
-    user.*
-    FROM rounds 
-    JOIN user_rounds ON rounds.id = user_rounds.round_id
-    JOIN user ON user_rounds.user_id = user.id
-    JOIN games ON rounds.game_number = games.id
-    GROUP BY user.id
-    ORDER BY winrate DESC 
-    ;
-    """))
+    query += ";"
 
+    # Ejecutar la consulta con parámetros vinculados
+    params = {}
+    if year is not None:
+        params['year'] = year
+    if limit is not None:
+        params['limit'] = limit
+
+    return db.session.execute(text(query), params)
 
 def games_query():
     return db.session.execute(text("""SELECT DISTINCT games.place, games_details.game_number, rounds.number, rounds.victory, user.first_name

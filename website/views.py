@@ -26,7 +26,7 @@ def admin_required(f):
 
 @views.route('/', methods=['GET'])
 def home():
-    return render_template("home.html", user=current_user, users= User.query.all(), winrates=top_10_winrates(), games = Games.query.filter(Games.created_at >= '2024-01-01').order_by(Games.created_at.desc()).all())
+    return render_template("home.html", user=current_user, users= User.query.all(), winrates=get_users_by_winrate(2025, 10), games = Games.query.filter(Games.created_at >= '2025-01-01').order_by(Games.created_at.desc()).all())
 
 
 @views.route('/profile', methods=['GET', 'POST'])
@@ -326,7 +326,7 @@ def get_user_data(user_id, year=None):
 
 @views.route('/all-players', methods=['GET'])
 def all_players():
-    return render_template("all_players.html", user=current_user, users= User.query.all(), winrates=all_users_by_winrate(), games = Games.query.all())
+    return render_template("all_players.html", user=current_user, users= User.query.all(), winrates=get_users_by_winrate(), games = Games.query.all())
 
 @views.route('/all-tournaments', methods=['GET'])
 def all_torunaments():

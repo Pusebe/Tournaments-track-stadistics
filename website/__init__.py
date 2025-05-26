@@ -18,7 +18,7 @@ UPLOAD_FOLDER = "/static/images/"
 '''
 
 # Configuración de la base de datos
-DB_USER = 'root'
+DB_USER = 'dondecuadre'
 DB_PASSWORD = os.environ.get('DB_PASSWORD', '')  # Contraseña del usuario root
 DB_HOST = 'localhost'
 DB_PORT = '3306'

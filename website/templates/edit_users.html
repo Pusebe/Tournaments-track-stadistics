@@ -1,5 +1,9 @@
 {% extends "base.html" %} {% block title %}Editar Perfil{% endblock %} {% block
 content %}
+
+<!-- Agregar CSS de Cropper.js -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" rel="stylesheet">
+
 <div class="container-fluid p-0">
   <div class="row justify-content-center mt-2 align-items-center">
     {% for user_to_edit in users %}
@@ -44,13 +48,18 @@ content %}
 <form method="POST" id="editUsersForm" enctype="multipart/form-data">
   <h3 align="center">Editar Perfil</h3>
   <input type="hidden" id="userId" name="userId" value="{{ current_user.id }}">
-  <img
-    src="{{ url_for('static', filename='images/'~user.id~'/'~user.photo~'') }}"
-    alt="{{user.first_name}}"
-    class="img-thumbnail mx-auto d-block"
-    style="width: 200px; height: 200px"
-    id="profileImage" 
-  />
+  
+  <!-- Preview de la imagen (ahora será circular) -->
+  <div class="text-center mb-3">
+    <img
+      src="{{ url_for('static', filename='images/'~user.id~'/'~user.photo~'') }}"
+      alt="{{user.first_name}}"
+      class="rounded-circle"
+      style="width: 150px; height: 150px; object-fit: cover; border: 3px solid #ddd;"
+      id="profileImage" 
+    />
+  </div>
+  
   <div class="form-group">
     <label for="email">Email</label>
     <input
@@ -93,8 +102,12 @@ content %}
   </div>
   <div class="form-group">
     <label for="photo">Cambiar foto perfil</label>
-    <input type="file" class="form-control" id="photo" name="photo" />
+    <input type="file" class="form-control" id="photo" name="photo" accept="image/*" />
+    <small class="form-text text-muted">Podrás recortar y ajustar la imagen después de seleccionarla</small>
   </div>
+  
+  <!-- Campo oculto para la imagen recortada - YA NO SE NECESITA -->
+  
   <br />
   <div class=" text-center mx-auto d-block">
     <button type="submit" class="btn btn-secondary">Modificar</button>
@@ -103,7 +116,41 @@ content %}
 
 </form>
 
-<!-- Modal Delete User-->
+<!-- Modal para recortar imagen -->
+<div class="modal fade" id="cropModal" tabindex="-1" role="dialog" aria-labelledby="cropModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="cropModalTitle">Ajustar foto de perfil</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="img-container">
+              <img id="imageToCrop" style="max-width: 100%;">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="preview-container text-center">
+              <h6>Vista previa:</h6>
+              <div class="preview-circle" style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden; border: 2px solid #ddd; margin: 0 auto;"></div>
+              <p class="mt-2 text-muted small">Mueve y redimensiona el área de recorte</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="cropAndSave">Aplicar recorte</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Delete User (sin cambios) -->
 <div class="modal fade" id="delete-user" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -124,5 +171,9 @@ content %}
   </div>
 </div> 
 
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script src="../static/admin_edit_users.js"></script>
+<script src="../static/js/image_cropper_simple.js"></script>
+
 {% endblock %}

@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
+from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for, send_from_directory, make_response
 from flask_login import login_required, current_user, login_user
-from .models import Games, User, Rounds
+from .models import Games, User, Rounds, Convocation, ConvocationUser, UserDevice
 from .sql import *
 import json
 import math
@@ -9,8 +9,15 @@ from werkzeug.security import generate_password_hash
 import os
 from sqlalchemy import desc, text
 from functools import wraps
+from .services.onesignal_service import OneSignalService
+from .services.telegram_service import TelegramService
+from datetime import datetime
+import pytz
 
 views = Blueprint('views', __name__)
+
+onesignal_service = OneSignalService()
+telegram= TelegramService()
 
 
 def admin_required(f):
@@ -119,7 +126,6 @@ def update_round():
 @views.route('/add-round', methods=['POST'])
 @admin_required
 def add_round():
-
     players = request.form.getlist('players')
     victory = request.form.get('victory') == 'True'
     game_id = request.form.get('game_id')
@@ -129,14 +135,17 @@ def add_round():
     new_round = Rounds(number=new_round_number,
                        victory=victory, game_number=game_id)
 
-    for player in players:
-        player = User.query.get(player)
-        new_round.players.append(player)
+    db.session.add(new_round)  # <--- Añadir a la sesión aquí
 
-    db.session.add(new_round)
+    for player_id in players:
+        player = User.query.get(player_id)
+        if player:
+            new_round.players.append(player)
+
     db.session.commit()
 
     return redirect("/dashboard/games")
+
 
 @views.route('/update-game', methods=['POST'])
 @admin_required
@@ -201,7 +210,7 @@ def delete_user():
 
     return jsonify({})
 
-@views.route('dashboard/edit-users', methods=['GET', 'POST'])
+@views.route('/dashboard/edit-users', methods=['GET', 'POST'])
 @admin_required
 def edit_users():
     user = None
@@ -260,7 +269,7 @@ def edit_users():
         user = current_user
     return render_template("edit_users.html", user=user, current_user=current_user, users=User.query.all())
 
-@views.route('dashboard/create_users', methods=['POST'])
+@views.route('/dashboard/create_users', methods=['POST'])
 @admin_required
 def create_users():
     if request.method == 'POST':
@@ -331,3 +340,221 @@ def all_players():
 @views.route('/all-tournaments', methods=['GET'])
 def all_torunaments():
     return render_template("all_tournaments.html", user=current_user, users= User.query.all(), games = Games.query.order_by(Games.created_at.desc()).all())
+
+@views.route('/announcement', methods=['GET', 'POST'])
+@admin_required
+def create_announcement():
+    
+    if request.method == 'POST':
+        subject = request.form.get('subject')
+        date_str = request.form.get('date')  # YYYY-MM-DDTHH:MM
+        place = request.form.get('place')
+        player_ids = request.form.getlist('players')  # IDs de usuarios seleccionados
+        try:
+            date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
+            date = pytz.timezone('Atlantic/Canary').localize(date)
+
+            convocation = Convocation(
+                subject=subject,
+                date=date,
+                place=place,
+                created_by=current_user.id
+            )
+            db.session.add(convocation)
+            db.session.flush()  # Obtener ID de convocation
+
+            # Añadir usuarios seleccionados
+            for user_id in player_ids:
+                user = User.query.get(user_id)
+                if user:
+                    if not ConvocationUser.query.filter_by(convocation_id=convocation.id, user_id=user.id).first():
+                        convocation_user = ConvocationUser(
+                            convocation_id=convocation.id,
+                            user_id=user_id
+                        )
+                        db.session.add(convocation_user)
+
+                    # Enviar notificación 
+                    devices = UserDevice.query.filter_by(user_id=user_id).all()
+
+                    if devices:
+                        player_ids = [device.onesignal_id for device in devices]
+                        onesignal_service.send_convocation_notification(
+                            convocation, user, player_ids, convocation.token
+                        )
+
+            db.session.commit()
+            return redirect(url_for('views.create_announcement'))  # Recarga la página
+        except ValueError:
+            return jsonify({'error': 'Formato de fecha inválido'}), 400
+
+    users = User.query.all()
+    convocations = Convocation.query.order_by(Convocation.created_at.desc()).all()
+    
+    # Ordenar los usuarios invitados de cada convocatoria
+    for convocation in convocations:
+        convocation.invited_users.sort(key=lambda cu: (
+            not cu.confirmed,  # Confirmados primero
+            cu.confirmed_at or datetime.max  # Por fecha de confirmación
+        ))
+    
+    return render_template('create_announcement.html', users=users, convocations=convocations)
+
+
+@views.route('/convocation', methods=['GET', 'POST'])
+def join_convocation():
+    token = request.args.get('token')
+    convocation = Convocation.query.filter_by(token=token).first()
+
+    if not convocation:
+        flash('Convocatoria no encontrada', 'error')
+        return redirect(url_for('views.home'))
+
+    if request.method == 'POST':
+        # FILTRO: Ignorar requests que no tengan user_id (requests de OneSignal)
+        user_id = request.form.get('user_id')
+        if not user_id:
+            print("POST request sin user_id - probablemente de OneSignal, ignorando...")
+            return '', 204  # No Content - ignora silenciosamente
+        
+        onesignal_id = request.form.get('onesignal_id')
+
+        user = User.query.get(user_id)
+        if not user:
+            flash('Usuario no encontrado', 'error')
+            return redirect(url_for('views.join_convocation', token=token))
+
+        # Registrar dispositivo
+        if onesignal_id:
+            device = UserDevice.query.filter_by(onesignal_id=onesignal_id, user_id=user.id).first()
+            if not device:
+                device = UserDevice(user_id=user.id, onesignal_id=onesignal_id)
+                db.session.add(device)
+                db.session.commit()
+
+        # Confirmar usuario en la convocatoria
+        convocation_user = ConvocationUser.query.filter_by(
+            convocation_id=convocation.id, user_id=user.id
+        ).first()
+        if convocation_user:
+            convocation_user.confirmed = True
+            convocation_user.confirmed_at = datetime.utcnow()
+            db.session.commit()
+            
+            # Telegram para avisar
+            mensaje = f"✅ {user.first_name} se ha registrado en: {convocation.subject}"
+            telegram.send_message(mensaje)
+
+            # Programar recordatorio
+            player_ids = [device.onesignal_id for device in UserDevice.query.filter_by(user_id=user.id).all()]
+            onesignal_service.schedule_reminder_notification(convocation, user, player_ids)
+
+            # Notificación a los admin
+            onesignal_service.alert_admin(convocation, user, player_ids, token)
+
+            flash('¡Confirmado en la convocatoria exitosamente!', 'success')
+            
+            # CREAR COOKIE DE CONFIRMACIÓN
+            response = make_response(redirect(url_for('views.join_convocation', token=token)))
+            
+            # Crear cookie simple con datos del usuario
+            cookie_data = f"{user_id}:{convocation.id}"
+            
+            # Configurar cookie (permanente hasta que se sobrescriba)
+            response.set_cookie('convocation_confirmed', cookie_data)
+            
+            return response
+        else:
+            flash('No estás invitado a esta convocatoria', 'error')
+            return redirect(url_for('views.join_convocation', token=token))
+
+    # === LÓGICA PARA GET ===
+    detected_user_id = None
+    onesignal_id_from_request = request.args.get('onesignal_id')
+    
+    # PRIORIDAD 1: OneSignal ID (más fiable)
+    if onesignal_id_from_request:
+        device = UserDevice.query.filter_by(onesignal_id=onesignal_id_from_request).first()
+        if device:
+            invited_user_ids = [cu.user_id for cu in convocation.invited_users]
+            if device.user_id in invited_user_ids:
+                detected_user_id = device.user_id
+
+    # PRIORIDAD 2: Cookie de confirmación (si no hay OneSignal)
+    if not detected_user_id:
+        cookie_value = request.cookies.get('convocation_confirmed')
+        if cookie_value:
+            try:
+                # Cookie simple formato: "user_id:convocation_id"
+                parts = cookie_value.split(':')
+                if len(parts) == 2:
+                    cookie_user_id = int(parts[0])
+                    cookie_convocation_id = int(parts[1])
+                    
+                    # Verificar que la cookie es para esta convocatoria
+                    if cookie_convocation_id == convocation.id:
+                        # Verificar que el usuario está invitado a esta convocatoria
+                        invited_user_ids = [cu.user_id for cu in convocation.invited_users]
+                        if cookie_user_id in invited_user_ids:
+                            detected_user_id = cookie_user_id
+                            print(f"Usuario identificado por cookie: {cookie_user_id}")
+                            
+            except (ValueError, IndexError) as e:
+                print(f"Error al leer cookie: {e}")
+                # Cookie inválida, la ignoramos
+
+    # Verificar si el usuario detectado ya confirmó
+    user_already_confirmed = False
+    user_confirmation_date = None
+    if detected_user_id:
+        confirmed_user = ConvocationUser.query.filter_by(
+            convocation_id=convocation.id, 
+            user_id=detected_user_id,
+            confirmed=True
+        ).first()
+        if confirmed_user:
+            user_already_confirmed = True
+            user_confirmation_date = confirmed_user.confirmed_at
+
+    # SIEMPRE obtener todos los usuarios confirmados
+    confirmed_convocation_users = ConvocationUser.query.filter_by(
+        convocation_id=convocation.id,
+        confirmed=True
+    ).all()
+    confirmed_users = [cu.user for cu in confirmed_convocation_users]
+    
+    # Obtener datos del usuario actual (solo si ya está confirmado)
+    current_user_name = ""
+    current_user_photo = ""
+    if user_already_confirmed and detected_user_id:
+        current_user = User.query.get(detected_user_id)
+        if current_user:
+            current_user_name = current_user.first_name
+            current_user_photo = current_user.photo
+
+    # Determinar qué usuarios mostrar
+    if detected_user_id:
+        users = [User.query.get(detected_user_id)]
+    else:
+        users = [cu.user for cu in convocation.invited_users]
+
+    return render_template('join_convocation.html', 
+                         convocation=convocation, 
+                         users=users, 
+                         detected_user_id=detected_user_id,
+                         user_already_confirmed=user_already_confirmed,
+                         user_confirmation_date=user_confirmation_date,
+                         confirmed_users=confirmed_users,
+                         current_user_name=current_user_name,
+                         current_user_photo=current_user_photo)
+
+#acortador de rutas
+@views.route('/<short_id>')
+def redirect_convocation(short_id):
+    conv = Convocation.query.filter_by(short_id=short_id).first_or_404()
+    return redirect(url_for('views.join_convocation', token=conv.token))
+
+
+@views.route('/OneSignalSDKWorker.js')
+def onesignal_worker():
+    return send_from_directory('static', 'OneSignalSDKWorker.js', mimetype='application/javascript')

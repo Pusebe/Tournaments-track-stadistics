@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Push Test</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            background: #f0f0f0;
+        }
+        .container { 
+            max-width: 400px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 20px; 
+            border-radius: 10px;
+        }
+        .status { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 5px; 
+            background: #fff3cd;
+        }
+        button { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            cursor: pointer;
+            margin: 5px;
+        }
+        .notification { 
+            background: #e9ecef; 
+            padding: 10px; 
+            margin: 5px 0; 
+            border-radius: 5px; 
+        }
+        .user-id {
+            background: #f8f9fa; 
+            padding: 10px; 
+            margin: 10px 0; 
+            font-size: 12px; 
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2> Push Notifications</h2>
+        <div id="status" class="status">Cargando OneSignal...</div>
+        <button id="permissionBtn" onclick="requestPermission()" style="display:none;">Pedir Permisos</button>
+        <button onclick="checkStatus()">Verificar Estado</button>
+        <div id="userId" class="user-id" style="display:none;"></div>
+        <h3>Notificaciones:</h3>
+        <div id="notifications"></div>
+    </div>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    let oneSignalInitialized = false;
+    
+    // Inicializar OneSignal UNA SOLA VEZ al cargar la página
+    OneSignalDeferred.push(async function(OneSignal) {
+        try {
+            await OneSignal.init({
+                appId: '2775bcd1-0a9c-40e1-99e8-e325e6b20769',
+                allowLocalhostAsSecureOrigin: true,
+            });
+            
+            oneSignalInitialized = true;
+            console.log('OneSignal inicializado correctamente');
+            document.getElementById('status').innerHTML = '✅ OneSignal listo';
+            document.getElementById('status').style.background = '#d4edda';
+            document.getElementById('permissionBtn').style.display = 'inline-block';
+            
+            addNotification('✅ OneSignal inicializado', 'SDK cargado correctamente');
+            
+            // Verificar si ya tiene permisos
+            const browserPermission = Notification.permission;
+            console.log('Permisos del navegador:', browserPermission);
+            
+            if (browserPermission === 'granted') {
+                document.getElementById('permissionBtn').style.display = 'none';
+                showUserId();
+            }
+            
+            // Escuchar notificaciones
+            OneSignal.Notifications.addEventListener('click', (event) => {
+                console.log('Notificación clickeada:', event);
+                addNotification('🔔 Click en notificación', event.notification.body);
+            });
+            
+            OneSignal.Notifications.addEventListener('foregroundWillDisplay', (event) => {
+                console.log('Notificación recibida (foreground):', event);
+                addNotification('📩 ' + event.notification.title, event.notification.body);
+                // No prevenir que se muestre
+                event.notification.display();
+            });
+            
+            // Escuchar notificaciones en background también
+            OneSignal.Notifications.addEventListener('backgroundWillDisplay', (event) => {
+                console.log('Notificación recibida (background):', event);
+                addNotification('📱 Background: ' + event.notification.title, event.notification.body);
+            });
+            
+        } catch (error) {
+            console.error('Error inicializando OneSignal:', error);
+            document.getElementById('status').innerHTML = '❌ Error: ' + error.message;
+            document.getElementById('status').style.background = '#f8d7da';
+        }
+    });
+    
+    function requestPermission() {
+        if (!oneSignalInitialized) {
+            addNotification('❌ Error', 'OneSignal no está inicializado');
+            return;
+        }
+        
+        console.log('Pidiendo permisos...');
+        
+        OneSignalDeferred.push(async function(OneSignal) {
+            try {
+                const permission = await OneSignal.Notifications.requestPermission();
+                console.log('Resultado permisos:', permission);
+                
+                // Verificar el estado real de los permisos del navegador
+                const browserPermission = Notification.permission;
+                console.log('Permisos del navegador:', browserPermission);
+                
+                if (browserPermission === 'granted') {
+                    addNotification('✅ Permisos otorgados', 'Notificaciones habilitadas');
+                    document.getElementById('permissionBtn').style.display = 'none';
+                    setTimeout(showUserId, 1000);
+                } else {
+                    addNotification('❌ Permisos denegados', 'No se podrán recibir notificaciones');
+                }
+            } catch (error) {
+                console.error('Error pidiendo permisos:', error);
+                addNotification('❌ Error permisos', error.message);
+            }
+        });
+    }
+    
+    function showUserId() {
+        OneSignalDeferred.push(async function(OneSignal) {
+            try {
+                const userId = await OneSignal.User.PushSubscription.id;
+                if (userId) {
+                    console.log('User ID:', userId);
+                    document.getElementById('userId').innerHTML = '<strong>User ID:</strong> ' + userId;
+                    document.getElementById('userId').style.display = 'block';
+                    addNotification('👤 Usuario registrado', 'Listo para recibir notificaciones');
+                } else {
+                    console.log('User ID no disponible aún, reintentando...');
+                    setTimeout(showUserId, 2000);
+                }
+            } catch (error) {
+                console.error('Error obteniendo User ID:', error);
+                setTimeout(showUserId, 2000);
+            }
+        });
+    }
+    
+    function addNotification(title, body) {
+        const div = document.createElement('div');
+        div.className = 'notification';
+        div.innerHTML = '<strong>' + title + '</strong><br>' + body + '<br><small>' + new Date().toLocaleTimeString() + '</small>';
+        document.getElementById('notifications').prepend(div);
+    }
+    
+    function checkStatus() {
+        addNotification('🔍 Verificando estado...', '');
+        
+        // Verificar permisos del navegador
+        const permission = Notification.permission;
+        console.log('Permisos navegador:', permission);
+        addNotification('📋 Permisos navegador', permission);
+        
+        // Verificar HTTPS
+        const isHTTPS = location.protocol === 'https:' || location.hostname === 'localhost';
+        console.log('HTTPS:', isHTTPS);
+        addNotification('🔒 HTTPS/Localhost', isHTTPS ? 'Sí' : 'NO - Requerido para push notifications');
+        
+        // Verificar Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                console.log('Service Workers:', registrations.length);
+                addNotification('⚙️ Service Workers', `${registrations.length} registrados`);
+                
+                registrations.forEach(reg => {
+                    console.log('SW:', reg.scope);
+                    addNotification('📍 SW Scope', reg.scope);
+                });
+            });
+        }
+        
+        // Verificar OneSignal
+        OneSignalDeferred.push(async function(OneSignal) {
+            try {
+                const userId = await OneSignal.User.PushSubscription.id;
+                const token = await OneSignal.User.PushSubscription.token;
+                
+                addNotification('👤 OneSignal User ID', userId ? 'Sí' : 'NO');
+                addNotification('🔑 Push Token', token ? 'Sí' : 'NO');
+                
+                console.log('User ID:', userId);
+                console.log('Push Token:', token);
+            } catch (error) {
+                addNotification('❌ Error OneSignal', error.message);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
+

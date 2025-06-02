@@ -1,0 +1,83 @@
+/* Estilos para la página de convocatoria */
+
+.checkbox {
+  cursor: pointer;
+}
+
+.checkbox input[type="radio"] {
+  display: none;
+}
+
+.checkbox img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  transition: all 0.3s ease;
+  margin-bottom: -10px;
+  margin-top: 20px;
+  object-fit: cover;
+}
+
+.checkbox:hover {
+  opacity: 0.8;
+}
+
+.checkbox:hover img {
+  filter: grayscale(70%);
+}
+
+.checkbox input[type="radio"]:checked + img {
+  background-color: #007bff;
+  filter: grayscale(0%);
+}
+
+.round-img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  transition: all 0.3s ease;
+  margin-bottom: -5px;
+  margin-top: 20px;
+}
+
+/* Estilos para usuarios confirmados */
+.confirmed-user-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #28a745;
+  filter: grayscale(0%);
+  transition: all 0.3s ease;
+}
+
+/* Usuario actual destacado */
+.current-user-img {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 4px solid #28a745;
+  filter: grayscale(0%);
+  box-shadow: 0 0 20px rgba(40, 167, 69, 0.4);
+  transition: all 0.3s ease;
+}
+
+/* Responsive design */
+@media screen and (max-width: 992px) {
+  .round-img, 
+  .checkbox img {
+    width: 105px;
+    height: 105px;
+  }
+  
+  .confirmed-user-img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .current-user-img {
+    width: 120px;
+    height: 120px;
+  }
+}

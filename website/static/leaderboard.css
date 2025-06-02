@@ -61,18 +61,21 @@
  .wrapper .wrapper__content ul li:not(:last-child) {
 	 margin-bottom: 10px;
 }
- .wrapper .wrapper__content ul li .graphic {
-	 width: 60px;
-	 height: 60px;
-	 border-radius: 50%;
-	 background: #ebeef3;
-	 overflow: hidden;
-	 padding: 5px;
+.wrapper .wrapper__content ul li .graphic {
+	width: 60px;
+	height: 60px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
- .wrapper .wrapper__content ul li .graphic img {
-	 width: 100%;
-	 border-radius: 50%;
+
+.wrapper .wrapper__content ul li .graphic img {
+	width: 100%;
+	object-fit: cover;
 }
+
  .wrapper .wrapper__content ul li .name span {
 	 vertical-align: middle;
 }

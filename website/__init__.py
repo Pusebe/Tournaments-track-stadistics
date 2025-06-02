@@ -2,6 +2,7 @@ from flask import Flask, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from sqlalchemy_utils import database_exists, create_database
+from .config import Config
 import os
 
 db = SQLAlchemy()
@@ -31,7 +32,7 @@ UPLOAD_FOLDER = "/static/images/"
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhjs'
+    app.config['SECRET_KEY'] = 'hjshjhdjah kjshkjdhj'
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URI
     #app.config['SQLALCHEMY_DATABASE_URI'] = DB_NAME
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER

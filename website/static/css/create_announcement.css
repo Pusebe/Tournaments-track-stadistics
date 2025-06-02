@@ -1,0 +1,105 @@
+/* Estilos para la página de convocatorias */
+
+/* Checkbox de selección de jugadores */
+.checkbox {
+  cursor: pointer;
+}
+
+.checkbox input[type="checkbox"] {
+  display: none;
+}
+
+.checkbox img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  filter: grayscale(100%);
+  transition: all 0.3s ease;
+  margin-bottom: -10px;
+  margin-top: 20px;
+  object-fit: cover; /* Añadido para mejor ajuste de imagen */
+}
+
+.checkbox:hover {
+  opacity: 0.8;
+}
+
+.checkbox:hover img {
+  filter: grayscale(70%);
+}
+
+.checkbox input[type="checkbox"]:checked + img {
+  background-color: #007bff;
+  filter: grayscale(0%);
+}
+
+/* Imágenes redondas generales */
+.round-img {
+  width: 85px;
+  height: 85px;
+  border-radius: 50%;
+  border: 1px solid #000;
+  transition: all 0.3s ease;
+  margin-bottom: -5px;
+  margin-top: 20px;
+  object-fit: cover; /* Añadido para mejor ajuste de imagen */
+}
+
+/* Imágenes de selección de jugadores */
+.player-selection-img {
+  width: 72px;
+  height: 72px;
+}
+
+/* Imágenes en la lista de convocatorias */
+.convocation-user-img {
+  width: 85px;
+  height: 85px;
+}
+
+/* Utilidad para comprimir elementos */
+.compress {
+  max-width: 150px;
+}
+
+/* Estilos del botón de WhatsApp */
+.whatsapp-share-btn {
+  background-color: #25D366 !important;
+  border-color: #25D366 !important;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.whatsapp-share-btn:hover {
+  background-color: #1DA851 !important;
+  border-color: #1DA851 !important;
+}
+
+.whatsapp-share-btn i {
+  margin-right: 5px;
+}
+
+/* Responsive design */
+@media screen and (max-width: 992px) {
+  .round-img, 
+  .checkbox img,
+  .player-selection-img,
+  .convocation-user-img {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .compress {
+    max-width: 60px;
+  }
+  
+  .whatsapp-share-btn {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+  
+  .whatsapp-share-btn i {
+    margin-right: 2px;
+  }
+}

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block title %}Convocatoria{% endblock %}
+
+{% block og_title %}CONFIRMA TU ASISTENCIA{% endblock %}
+{% block og_description %}Recuerda aceptar notificaciones si quieres recibir futuras convocatorias y recordatorios{% endblock %}
+
+{% block content %}
+<!-- Overlay completo con spinner -->
+<div id="loadingOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: white; z-index: 9999; display: flex; justify-content: center; align-items: center; flex-direction: column;">
+  <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="mt-3 text-muted">Revisando convocados...</p>
+</div>
+
+<!-- Contenido principal -->
+<div class="container-fluid p-0" id="pageContent">
+  <h2>{{ convocation.subject }}</h2>
+  
+  {% if not user_already_confirmed %}
+  <!-- Mensaje especial cuando hay exactamente 4 confirmados -->
+  {% if confirmed_users|length == 4 %}
+  <div class="alert alert-warning text-center mt-3">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    <strong>¡Ya hay 4 apuntados!</strong><br>
+    Pero si tú te apuntas también, Igna decidirá el cuarteto.
+  </div>
+  {% endif %}
+  
+  <!-- Vista para usuarios no confirmados (actual) -->
+  <form method="POST" id="joinConvocationForm">
+    <div class="row justify-content-center mt-2 align-items-center">
+      {% for user in users %}
+      <div class="col-auto p-0">
+        <div class="container">
+          <div class="row justify-content-center align-items-center">
+            <div class="col text-center"></div>
+          </div>
+          <div class="row justify-content-center align-items-center">
+            <div class="col-auto px-1 text-center">
+              <label class="checkbox round-checkbox">
+                <input type="radio" name="user_id" value="{{ user.id }}" 
+                       {% if detected_user_id and user.id == detected_user_id %}checked{% endif %} required>
+                <img src="{{ url_for('static', filename='images/' ~ user.id ~ '/' ~ user.photo) }}"
+                     alt="{{ user.first_name }}"
+                     class="round-img"
+                     {% set is_confirmed = user in confirmed_users %}
+                     {% if detected_user_id and user.id == detected_user_id %}
+                     style="filter: grayscale(0%); background-color: #007bff;"
+                     {% elif is_confirmed %}
+                     style="filter: grayscale(0%); border-color: #28a745; border-width: 3px;"
+                     {% else %}
+                     style="filter: grayscale(100%);"
+                     {% endif %}>
+              </label>
+            </div>
+          </div>
+          <div class="row justify-content-center align-items-center">
+            <div class="col text-center mt-2">
+              {{ user.first_name }}
+              {% set is_confirmed = user in confirmed_users %}
+              {% if is_confirmed %}
+                <span style="color: #28a745; margin-left: 5px;">✓</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center mt-3">
+      <button type="submit" class="btn btn-dark">Confirmar</button>
+    </div>
+  </form>
+  
+  {% else %}
+  <!-- Mostrar confirmados -->
+  <div class="mt-5">
+    <h4 class="text-center mb-4">Confirmados:</h4>
+    
+    <!-- Fila de confirmados (excluyendo al usuario actual) -->
+    {% if confirmed_users|length > 1 %}
+    <div class="row justify-content-center mt-3 align-items-center">
+      {% for confirmed_user in confirmed_users %}
+        {% if confirmed_user.id != detected_user_id %}
+        <div class="col-auto p-2">
+          <div class="text-center">
+            <img src="{{ url_for('static', filename='images/' ~ confirmed_user.id ~ '/' ~ confirmed_user.photo) }}"
+                 alt="{{ confirmed_user.first_name }}"
+                 class="confirmed-user-img">
+            <div class="mt-2">{{ confirmed_user.first_name }}</div>
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Usuario actual destacado y centrado -->
+    <div class="row justify-content-center mt-4">
+      <div class="col-auto text-center">
+        <img src="{{ url_for('static', filename='images/' ~ detected_user_id ~ '/' ~ current_user_photo) }}"
+             alt="{{ current_user_name }}"
+             class="current-user-img">
+        <div class="mt-2 fw-bold">{{ current_user_name }} (Tú)</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Vista para usuarios ya confirmados -->
+  <div class="text-center mt-4">
+    <div class="alert alert-success d-inline-block">
+      <i class="fas fa-check-circle me-2"></i>¡Ya has confirmado tu asistencia!
+    </div>
+    <div class="mt-3">
+      <p class="text-muted">Tu confirmación se registró el {{ user_confirmation_date.strftime('%d/%m/%Y a las %H:%M') if user_confirmation_date else 'recientemente' }}.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Scripts -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" async></script>
+<script src="{{ url_for('static', filename='js/convocation.js') }}"></script>
+
+<!-- Pasar datos de Flask a JavaScript -->
+<script>
+  window.convocationData = {
+    userAlreadyConfirmed: {{ 'true' if user_already_confirmed else 'false' }}
+  };
+</script>
+
+<!-- CSS específico de la página -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/convocation.css') }}">
+{% endblock %}

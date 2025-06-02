@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Convocatorias{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-0">
+  <!-- Formulario para crear convocatoria -->
+  <form method="POST" id="createConvocatoriaForm" action="{{ url_for('views.create_announcement') }}">
+    <!-- Lista de usuarios seleccionables -->
+    <div class="row justify-content-center mt-2 align-items-center">
+      {% for user in users %}
+      <div class="col-auto p-0">
+        <div class="container">
+          <div class="row justify-content-center align-items-center">
+            <div class="col text-center"></div>
+          </div>
+          <div class="row justify-content-center align-items-center">
+            <div class="col-auto px-1 text-center">
+              <div class="clickable-item">
+                <label class="checkbox round-checkbox">
+                  <input type="checkbox" name="players" value="{{ user.id }}" class="player-checkbox">
+                  <img src="{{ url_for('static', filename='images/' ~ user.id ~ '/' ~ user.photo) }}" 
+                       alt="{{ user.first_name }}" 
+                       class="round-img player-selection-img">
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-center align-items-center">
+            <div class="col text-center">{{ user.first_name }}</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="form-group mt-3">
+      <label for="subject">Asunto</label>
+      <input type="text" class="form-control" id="subject" name="subject" placeholder="Asunto de la convocatoria" required>
+    </div>
+    
+    <div class="form-group mt-3">
+      <label for="date">Fecha y Hora</label>
+      <input type="datetime-local" class="form-control" id="date" name="date" required>
+    </div>
+    
+    <div class="form-group mt-3">
+      <label for="place">Lugar</label>
+      <input type="text" class="form-control" id="place" name="place" placeholder="Lugar de la convocatoria" required>
+    </div>
+    
+    <div class="text-center mt-3">
+      <button type="submit" class="btn btn-dark">Crear Convocatoria</button>
+    </div>
+  </form>
+
+  <!-- Lista de convocatorias -->
+  <div class="mt-4">
+    <h3 align="center">Convocatorias</h3>
+    <ul class="list-group" id="convocatoriasList">
+      {% for convocation in convocations %}
+      <li class="list-group-item">
+        <strong>{{ convocation.subject }}</strong><br>
+        {{ convocation.place }} ({{ convocation.date.strftime('%Y-%m-%d %H:%M') }})
+        <br>
+        <div class="d-flex flex-wrap justify-content-center mt-2">
+          {% for convocation_user in convocation.invited_users %}
+          <div class="text-center mx-1">
+            <img src="{{ url_for('static', filename='images/' ~ convocation_user.user.id ~ '/' ~ convocation_user.user.photo) }}"
+                alt="{{ convocation_user.user.first_name }}"
+                class="round-img convocation-user-img"
+                style="{% if not convocation_user.confirmed %}filter: grayscale(100%);{% endif %}">
+            <div class="mt-1">{{ convocation_user.user.first_name }}</div>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <div class="text-center mt-2">
+          <button class="btn btn-success btn-sm whatsapp-share-btn" 
+            data-subject="{{ convocation.subject }}"
+            data-date="{{ convocation.date.strftime('%d/%m/%Y %H:%M') }}"
+            data-place="{{ convocation.place }}"
+            data-link="{{ url_for('views.redirect_convocation', short_id=convocation.short_id, _external=True) }}"
+            data-invited-count="{{ convocation.invited_users|length }}">
+            <i class="fab fa-whatsapp"></i> Compartir
+          </button>
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center">
+          <small>Creada: {{ convocation.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="{{ url_for('static', filename='js/create_announcement.js') }}"></script>
+
+<!-- CSS específico de la página -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/create_announcement.css') }}">
+
+<!-- Font Awesome para el icono de WhatsApp -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
